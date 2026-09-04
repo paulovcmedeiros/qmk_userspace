@@ -1,0 +1,5 @@
+# Generated intermediate; edit keymap.c or keymap-documentation.json instead.
+keymap-combos.yaml
+
+# Track the rendered diagram so README.md can embed it.
+!keymap.svg
