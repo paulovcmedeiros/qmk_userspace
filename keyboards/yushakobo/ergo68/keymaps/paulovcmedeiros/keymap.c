@@ -55,12 +55,12 @@ enum custom_keycodes {
 };
 
 enum combo_events {
-    INNER_THUMBS_ENTER,
-    NEXT_THUMBS_TAB,
+    THUMBS_ENTER,
 };
 
 #define HOLD_ACTION_TERM 2000
 #define MOUSE_DOUBLE_TAP_TERM 100
+#define THUMBS_ENTER_COMBO_TERM 30
 
 // Physical RGB matrix indexes reserved for status indicators.
 enum indicator_leds {
@@ -109,20 +109,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-const uint16_t PROGMEM inner_thumbs_enter_combo[] = {LT(NUMPAD, KC_SPC), RSFT_T(KC_SPC), COMBO_END};
-const uint16_t PROGMEM next_thumbs_tab_combo[]    = {LT(MOUSE, KC_SPC), LT(SYMBOLS, KC_SPC), COMBO_END};
+const uint16_t PROGMEM thumbs_enter_combo[] = {LT(MOUSE, KC_SPC), LT(SYMBOLS, KC_SPC), COMBO_END};
 
 combo_t key_combos[] = {
-    [INNER_THUMBS_ENTER] = COMBO(inner_thumbs_enter_combo, KC_ENT),
-    [NEXT_THUMBS_TAB]    = COMBO(next_thumbs_tab_combo, KC_TAB),
+    [THUMBS_ENTER] = COMBO(thumbs_enter_combo, KC_ENT),
 };
+
+uint16_t get_combo_term(uint16_t combo_index, combo_t *combo) {
+    return combo_index == THUMBS_ENTER ? THUMBS_ENTER_COMBO_TERM : COMBO_TERM;
+}
 
 bool get_combo_must_tap(uint16_t combo_index, combo_t *combo) {
     return true;
 }
 
 bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
-    return get_highest_layer(layer_state) == BASE;
+    if (get_highest_layer(layer_state) != BASE) {
+        return false;
+    }
+
+    return combo_index != THUMBS_ENTER || !(get_mods() & (MOD_MASK_SHIFT | MOD_MASK_ALT));
 }
 
 static matrix_row_t intercepted_space_taps[MATRIX_ROWS];

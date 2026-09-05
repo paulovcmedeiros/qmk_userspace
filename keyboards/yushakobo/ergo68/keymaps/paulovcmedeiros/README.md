@@ -35,8 +35,9 @@ requires auditing the keymap's printable keycodes and all `SEND_STRING` macros.
 
 - The thumb Space keys are dual-role. Tapping one while Shift or Alt is held
   sends Backspace instead.
-- The two inner thumbs form Enter; the next pair forms Tab. These combos work
-  only on Base and must be tapped within their 40 ms chord window.
+- The Mouse and Symbols thumb keys form Enter. This combo works only on Base,
+  must be tapped within its 30 ms chord window, and is disabled while Shift or
+  Alt is held so that modified-Space Backspace takes priority.
 - Holding a mouse direction after a double tap within 100 ms uses maximum
   pointer acceleration.
 - The custom punctuation keys append Space when held for 150 ms. The custom
