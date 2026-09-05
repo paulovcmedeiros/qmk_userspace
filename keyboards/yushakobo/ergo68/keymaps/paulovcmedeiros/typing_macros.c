@@ -1,0 +1,196 @@
+/* Copyright 2026 Paulo V. C. Medeiros <paulo@medeiros.se>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "keymap.h"
+
+static matrix_row_t intercepted_space_taps[MATRIX_ROWS];
+
+typedef struct {
+    bool     pressed;
+    bool     hold_sent;
+    uint16_t timer;
+} tap_hold_state_t;
+
+// Tap sends keypad slash; hold or interruption sends "~/".
+static tap_hold_state_t home_slash;
+
+// Tap sends minus; hold or interruption sends " -".
+static tap_hold_state_t space_minus;
+
+typedef struct {
+    uint16_t custom_keycode;
+    uint16_t tap_keycode;
+    uint16_t timer;
+    bool     pending;
+} punctuation_space_t;
+
+static punctuation_space_t punctuation_spaces[] = {
+    {COMM_SP, KC_COMM},
+    {SCLN_SP, KC_SCLN},
+    {DOT_SP, KC_DOT},
+};
+
+/** Send the hold action for HOME_SLASH and mark it as resolved. */
+static void send_home_slash_hold(void) {
+    SEND_STRING("~/");
+    home_slash.hold_sent = true;
+}
+
+/** Send the hold action for SP_MINS and mark it as resolved. */
+static void send_space_minus_hold(void) {
+    SEND_STRING(" -");
+    space_minus.hold_sent = true;
+}
+
+/** Return whether this event represents a plain or dual-role Space tap. */
+static bool is_space_tap(uint16_t keycode, keyrecord_t *record) {
+    if (keycode == KC_SPC) {
+        return true;
+    }
+
+    if (record->tap.count == 0) {
+        return false;
+    }
+
+    if (IS_QK_MOD_TAP(keycode)) {
+        return QK_MOD_TAP_GET_TAP_KEYCODE(keycode) == KC_SPC;
+    }
+
+    if (IS_QK_LAYER_TAP(keycode)) {
+        return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode) == KC_SPC;
+    }
+
+    return false;
+}
+
+/**
+ * Replace a Space tap with Backspace while Shift or Alt is held.
+ *
+ * The intercepted key position is remembered so its release is consumed too.
+ * Returns false when the event has been handled.
+ */
+bool process_modified_space(uint16_t keycode, keyrecord_t *record) {
+    matrix_row_t key_mask = (matrix_row_t)1 << record->event.key.col;
+    uint8_t      key_row  = record->event.key.row;
+
+    if (!record->event.pressed && (intercepted_space_taps[key_row] & key_mask)) {
+        intercepted_space_taps[key_row] &= ~key_mask;
+        return false;
+    }
+
+    if (record->event.pressed && is_space_tap(keycode, record) && (get_mods() & (MOD_MASK_SHIFT | MOD_MASK_ALT))) {
+        uint8_t saved_mods = get_mods();
+
+        intercepted_space_taps[key_row] |= key_mask;
+        del_mods(MOD_MASK_SHIFT | MOD_MASK_ALT);
+        send_keyboard_report();
+        tap_code(KC_BSPC);
+        set_mods(saved_mods);
+        send_keyboard_report();
+        return false;
+    }
+
+    return true;
+}
+
+bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
+    // Resolve HOME_SLASH as a hold before processing an interrupting key.
+    if (record->event.pressed && home_slash.pressed && !home_slash.hold_sent && keycode != HOME_SLASH) {
+        send_home_slash_hold();
+    }
+
+    // Resolve SP_MINS as a hold before processing an interrupting key.
+    if (record->event.pressed && space_minus.pressed && !space_minus.hold_sent && keycode != SP_MINS) {
+        send_space_minus_hold();
+    }
+
+    // Punctuation is immediate; Space is appended only after TAPPING_TERM.
+    for (uint8_t i = 0; i < ARRAY_SIZE(punctuation_spaces); i++) {
+        punctuation_space_t *punctuation = &punctuation_spaces[i];
+
+        if (keycode == punctuation->custom_keycode) {
+            if (record->event.pressed) {
+                tap_code(punctuation->tap_keycode);
+                punctuation->pending = true;
+                punctuation->timer   = timer_read();
+            } else {
+                punctuation->pending = false;
+            }
+            return false;
+        }
+    }
+
+    switch (keycode) {
+        case PYTHON_SHEBANG:
+            if (record->event.pressed) {
+                SEND_STRING("#!/usr/bin/env python3\n");
+            }
+            return false;
+
+        case BASH_SHEBANG:
+            if (record->event.pressed) {
+                SEND_STRING("#!/usr/bin/env bash\n");
+            }
+            return false;
+
+        case HOME_SLASH:
+            if (record->event.pressed) {
+                home_slash.pressed   = true;
+                home_slash.hold_sent = false;
+                home_slash.timer     = timer_read();
+            } else {
+                if (!home_slash.hold_sent) {
+                    tap_code(KC_PSLS);
+                }
+                home_slash.pressed = false;
+            }
+            return false;
+
+        case SP_MINS:
+            if (record->event.pressed) {
+                space_minus.pressed   = true;
+                space_minus.hold_sent = false;
+                space_minus.timer     = timer_read();
+            } else {
+                if (!space_minus.hold_sent) {
+                    tap_code(KC_MINS);
+                }
+                space_minus.pressed = false;
+            }
+            return false;
+    }
+
+    return true;
+}
+
+void typing_macros_task(void) {
+    for (uint8_t i = 0; i < ARRAY_SIZE(punctuation_spaces); i++) {
+        punctuation_space_t *punctuation = &punctuation_spaces[i];
+
+        if (punctuation->pending && timer_elapsed(punctuation->timer) >= TAPPING_TERM) {
+            punctuation->pending = false;
+            tap_code(KC_SPC);
+        }
+    }
+
+    if (home_slash.pressed && !home_slash.hold_sent && timer_elapsed(home_slash.timer) >= TAPPING_TERM) {
+        send_home_slash_hold();
+    }
+
+    if (space_minus.pressed && !space_minus.hold_sent && timer_elapsed(space_minus.timer) >= TAPPING_TERM) {
+        send_space_minus_hold();
+    }
+}

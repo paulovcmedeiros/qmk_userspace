@@ -140,11 +140,25 @@ provides quicker visual feedback during that process.
 
 | File | Purpose |
 | --- | --- |
-| `keymap.c`, `config.h`, `rules.mk` | Firmware mapping, behavior, and configuration |
+| `keymap.c` | Layer definitions, layout, combos, normal RGB indicators, and QMK hook routing |
+| `keymap.h` | Shared custom keycodes and behavior-module interfaces |
+| `typing_macros.c` | Shebangs, slash/minus tap-hold, punctuation spacing, and modified-Space Backspace |
+| `mouse_acceleration.c` | Double-tap mouse acceleration |
+| `key_lock.c` | Pressing Key Lock again to release a locked key |
+| `system_actions.c` | Protected system actions, their RGB feedback, and split RPC synchronization |
+| `config.h`, `rules.mk` | QMK feature settings and module source registration |
 | `keymap-documentation.json` | Layer names, combo labels, and behavior notes |
 | `keymap_drawer_config.yaml` (userspace root) | Key labels and keymap-drawer parsing and SVG options |
 | `keymap.svg` | Generated diagram; regenerate and commit it |
 | `keymap-combos.yaml` | Generated intermediate; never edit it |
+
+`keymap.c` remains the entry point for firmware behavior. Its hooks delegate to
+modules that keep their state private. Key events run through mouse acceleration,
+typing macros, system actions, then modified-Space handling, stopping when a
+handler consumes the event. The scan hook resolves typing timers before system
+action timers. Keep that ordering when adding behavior. The layout and combo
+definitions stay in `keymap.c` so the preview script can continue reading them
+directly.
 
 The `layers` mapping in `keymap-documentation.json` must follow the order of
 `enum layer_names` in `keymap.c`. The watcher does not infer arbitrary behavior
