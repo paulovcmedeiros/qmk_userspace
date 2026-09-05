@@ -1,0 +1,30 @@
+{
+    "cSpell.words": [
+        "BSLS",
+        "BSPC",
+        "eeconfig",
+        "GESC",
+        "LALT",
+        "LBRC",
+        "LCTL",
+        "LGUI",
+        "LSFT",
+        "PGDN",
+        "PGUP",
+        "PMNS",
+        "PPLS",
+        "PSLS",
+        "RALT",
+        "RBRC",
+        "RCTL",
+        "RGHT",
+        "RSFT",
+        "SCLN",
+        "SLSH",
+        "TOGG",
+        "WHLD",
+        "WHLU",
+        "yushakobo"
+    ],
+    "makefile.configureOnOpen": false
+}
