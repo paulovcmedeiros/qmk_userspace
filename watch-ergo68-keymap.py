@@ -25,7 +25,15 @@ KEYBOARD = "yushakobo/ergo68"
 KEYBOARD_DISPLAY_NAME = "Yushakobo Ergo68"
 KEYMAP_NAME = "paulovcmedeiros"
 LAYOUT_NAME = "LAYOUT"
-SCRIPT_DIR = Path(__file__).resolve().parent
+USERSPACE_ROOT = Path(__file__).resolve().parent
+KEYMAP_DIR = (
+    USERSPACE_ROOT
+    / "keyboards"
+    / "yushakobo"
+    / "ergo68"
+    / "keymaps"
+    / KEYMAP_NAME
+)
 PROGRAM_NAME = "watch-ergo68-keymap"
 POLL_INTERVAL_SECONDS = 0.5
 DEFAULT_PREVIEW_PORT = 8000
@@ -73,19 +81,10 @@ LIVE_VIEW_HTML = """\
 """.replace("{keyboard_name}", KEYBOARD_DISPLAY_NAME)
 
 
-def find_qmk_home() -> Path:
-    """Find the QMK checkout containing this keymap."""
-    for candidate in (SCRIPT_DIR, *SCRIPT_DIR.parents):
-        if (candidate / "keyboards" / KEYBOARD / "keyboard.json").is_file():
-            return candidate
-    raise RuntimeError(f"could not locate the QMK checkout above {SCRIPT_DIR}")
-
-
-QMK_HOME = find_qmk_home()
-DEFAULT_SOURCE = SCRIPT_DIR / "keymap.c"
-DEFAULT_OUTPUT = SCRIPT_DIR / "keymap.svg"
-DEFAULT_COMBOS_OUTPUT = SCRIPT_DIR / "keymap-combos.yaml"
-DOCUMENTATION_SOURCE = SCRIPT_DIR / "keymap-documentation.json"
+DEFAULT_SOURCE = KEYMAP_DIR / "keymap.c"
+DEFAULT_OUTPUT = KEYMAP_DIR / "keymap.svg"
+DEFAULT_COMBOS_OUTPUT = KEYMAP_DIR / "keymap-combos.yaml"
+DOCUMENTATION_SOURCE = KEYMAP_DIR / "keymap-documentation.json"
 
 SVG_ROOT_PATTERN = re.compile(
     r'^<svg width="(?P<width>\d+)" height="(?P<height>\d+)" '
@@ -447,7 +446,7 @@ def generate_keyboard_info(qmk: str, info_json: Path) -> None:
     with info_json.open("wb") as output:
         subprocess.run(
             [qmk, "info", "-kb", KEYBOARD, "-f", "json"],
-            cwd=QMK_HOME,
+            cwd=USERSPACE_ROOT,
             stdout=output,
             check=True,
         )
@@ -494,7 +493,7 @@ def render(
                 KEYMAP_NAME,
                 str(source),
             ],
-            cwd=QMK_HOME,
+            cwd=USERSPACE_ROOT,
             stdout=subprocess.PIPE,
             check=True,
         )
@@ -519,7 +518,7 @@ def render(
                 "-o",
                 str(parsed_yaml),
             ],
-            cwd=QMK_HOME,
+            cwd=USERSPACE_ROOT,
             input=drawer_keymap,
             check=True,
         )
@@ -538,7 +537,7 @@ def render(
                 "-o",
                 str(rendered_svg),
             ],
-            cwd=QMK_HOME,
+            cwd=USERSPACE_ROOT,
             check=True,
         )
         add_svg_documentation(

@@ -77,14 +77,12 @@ qmk userspace-add -kb yushakobo/ergo68 -km paulovcmedeiros
 qmk userspace-compile
 ```
 
-The watcher currently expects a QMK Firmware checkout in one of its parent
-directories, so that lookup will need adapting during the move.
-
 ## Live keymap preview
 
-`watch-ergo68-keymap.py` is a small development helper for this keymap. It
-renders `keymap.c` to `keymap.svg`, watches the source for changes, and updates
-a browser preview after each successful render. It also watches
+The userspace-root `watch-ergo68-keymap.py` is a small development helper for
+this keymap. It renders `keymap.c` to `keymap.svg`, watches the source for
+changes, and updates a browser preview after each successful render. It also
+watches
 `keymap-documentation.json`, which provides human-readable layer names, rich
 legends for custom behaviors, and the behavior notes appended to the SVG.
 Its layer mapping also lets `keymap.c` use the layer enum identifiers directly
@@ -111,7 +109,7 @@ Ergo68 geometry and convert the C keymap to JSON. It then relies on the
 the JSON and draw the SVG. Python 3, `qmk`, and `keymap` must therefore be
 available on `PATH`.
 
-Run the watcher from this directory with:
+Run the watcher from the userspace root with:
 
 ```sh
 ./watch-ergo68-keymap.py
