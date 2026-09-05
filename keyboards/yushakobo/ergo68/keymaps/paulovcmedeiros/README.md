@@ -24,8 +24,8 @@ Consequently, keycodes such as `S(KC_3)`, `S(KC_4)`, `KC_LBRC`, and `KC_BSLS`
 refer to US-compatible key positions rather than layout-independent
 characters. QMK's default
 [`SEND_STRING`](https://docs.qmk.fm/features/send_string) translation relies
-on the same compatibility. AltGr combinations such as `RALT(KC_6)` depend
-specifically on EurKEY.
+on the same compatibility. Right Alt serves as AltGr, whose combinations
+depend specifically on EurKEY.
 
 Plain US should produce the intended ASCII letters and symbols, but it will not
 preserve EurKEY's AltGr and multilingual behavior. Using another host layout

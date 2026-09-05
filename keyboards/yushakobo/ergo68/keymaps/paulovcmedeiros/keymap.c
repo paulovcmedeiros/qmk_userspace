@@ -29,9 +29,9 @@
  * compatible with US QWERTY, so expressions such as S(KC_3), KC_LBRC, and
  * QMK's default SEND_STRING translation intentionally use US key positions.
  *
- * AltGr combinations, including RALT(KC_6), rely specifically on EurKEY.
- * Changing the host layout requires auditing both keymap entries and all
- * SEND_STRING macros.
+ * Right Alt serves as EurKEY's AltGr modifier, so its combinations rely on
+ * that layout. Changing the host layout requires auditing both keymap entries
+ * and all SEND_STRING macros.
  */
 
 enum layer_names {
@@ -77,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Layer 0: Base
     [BASE] = LAYOUT(
         QK_GESC,          KC_1,    KC_2,    KC_3,    KC_4,            KC_5,                                                                 KC_6,                KC_7,           KC_8,    KC_9,    KC_0,    KC_BSPC,
-        KC_TAB,           KC_Q,    KC_W,    KC_E,    KC_R,            KC_T,               KC_DEL,                   KC_DEL,         KC_Y,                KC_U,           KC_I,        KC_O,        KC_P,    RALT(KC_6),
+        KC_TAB,           KC_Q,    KC_W,    KC_E,    KC_R,            KC_T,               KC_DEL,                   KC_DEL,         KC_Y,                KC_U,           KC_I,        KC_O,        KC_P,    KC_RCTL,
         KC_GRV,           KC_A,    KC_S,    KC_D,    KC_F,            KC_G,               KC_PSCR,                  KC_INS,         KC_H,                KC_J,           KC_K,        KC_L,        KC_SCLN, KC_QUOT,
         KC_LSFT,          KC_Z,    KC_X,    KC_C,    KC_V,            KC_B,               QK_LOCK,                  S(KC_4),        KC_N,                KC_M,           KC_COMM,     KC_DOT,      KC_SLSH, KC_RSFT,
         LCTL_T(KC_BSLS),  AS_TOGG, KC_LGUI, KC_LSFT, LALT_T(KC_SPC),  LT(MOUSE, KC_SPC),  LT(NUMPAD, KC_SPC),       RSFT_T(KC_SPC), LT(SYMBOLS, KC_SPC), RALT_T(KC_SPC), KC_RSFT,     KC_MUTE,     UG_TOGG, RCTL_T(KC_ENT)
