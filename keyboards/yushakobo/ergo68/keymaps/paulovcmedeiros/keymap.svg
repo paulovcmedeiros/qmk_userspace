@@ -1,4 +1,4 @@
-<svg width="956" height="2068" viewBox="0 0 956 2068" class="keymap" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="956" height="2088" viewBox="0 0 956 2088" class="keymap" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <title>Yushakobo Ergo68 keymap</title>
 <style>/* inherit to force styles through use tags */
 svg path {
@@ -1518,7 +1518,7 @@ a[href="#Symbols"] text.layer-activator {
 </g>
 </g>
 <g class="behavior-notes">
-<rect x="20" y="1718" width="916" height="330" rx="6" class="key"/>
+<rect x="20" y="1718" width="916" height="350" rx="6" class="key"/>
 <text x="40" y="1753.0" style="text-anchor: start; font-weight: bold">Behavior notes</text>
 <text x="40" y="1778.0" style="text-anchor: start; font-size: 12px">• Tap-hold term: 150 ms; another key press resolves the ~/ and ␠- holds immediately.</text>
 <text x="40" y="1798.0" style="text-anchor: start; font-size: 12px">• Shift or Alt plus a tapped Space sends Backspace instead.</text>
@@ -1527,11 +1527,12 @@ a[href="#Symbols"] text.layer-activator {
 <text x="40" y="1858.0" style="text-anchor: start; font-size: 12px">• Both Shift keys activate Caps Word; Auto Shift can be toggled from Base.</text>
 <text x="40" y="1878.0" style="text-anchor: start; font-size: 12px">• Key Lock locks the next basic key; pressing Key Lock again releases it.</text>
 <text x="40" y="1898.0" style="text-anchor: start; font-size: 12px">• All system keys require a two-second hold.</text>
-<text x="40" y="1918.0" style="text-anchor: start; font-size: 12px">• Make builds normally; Shift+Make flashes; Ctrl+Shift+Make enters the bootloader.</text>
-<text x="40" y="1938.0" style="text-anchor: start; font-size: 12px">• EEPROM Clear erases persisted QMK settings and restarts the keyboard.</text>
-<text x="40" y="1958.0" style="text-anchor: start; font-size: 12px">• Python and Bash shebang keys type the complete line followed by Enter.</text>
-<text x="40" y="1978.0" style="text-anchor: start; font-size: 12px">• Build dates reports the firmware compilation datetime for each keyboard half.</text>
-<text x="40" y="1998.0" style="text-anchor: start; font-size: 12px">• RGB status: Caps/Num/Scroll locks and Mouse are blue; Numpad is orange; Symbols is green.</text>
-<text x="40" y="2018.0" style="text-anchor: start; font-size: 12px">• Host layout: EurKEY; printable symbols and macros assume its US-compatible positions.</text>
+<text x="40" y="1918.0" style="text-anchor: start; font-size: 12px">• System-key RGB feedback: other LEDs turn off; Numpad blinks red while arming and turns yellow when confirmed.</text>
+<text x="40" y="1938.0" style="text-anchor: start; font-size: 12px">• Make builds normally; Shift+Make flashes; Ctrl+Shift+Make enters the bootloader.</text>
+<text x="40" y="1958.0" style="text-anchor: start; font-size: 12px">• EEPROM Clear erases persisted QMK settings and restarts the keyboard.</text>
+<text x="40" y="1978.0" style="text-anchor: start; font-size: 12px">• Python and Bash shebang keys type the complete line followed by Enter.</text>
+<text x="40" y="1998.0" style="text-anchor: start; font-size: 12px">• Build dates reports the firmware compilation datetime for each keyboard half.</text>
+<text x="40" y="2018.0" style="text-anchor: start; font-size: 12px">• RGB status: Caps/Num/Scroll locks and Mouse are blue; Numpad is orange; Symbols is green.</text>
+<text x="40" y="2038.0" style="text-anchor: start; font-size: 12px">• Host layout: EurKEY; printable symbols and macros assume its US-compatible positions.</text>
 </g>
 </svg>

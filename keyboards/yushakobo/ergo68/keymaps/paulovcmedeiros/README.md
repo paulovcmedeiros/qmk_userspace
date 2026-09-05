@@ -48,7 +48,9 @@ requires auditing the keymap's printable keycodes and all `SEND_STRING` macros.
 - System keys require a two-second hold. Make types and submits the QMK compile
   command, Shift+Make does the same for flash, Ctrl+Shift+Make enters the
   bootloader, EEPROM Clear erases persisted QMK settings and restarts the
-  keyboard, and Build Dates types both halves' compilation timestamps.
+  keyboard, and Build Dates types both halves' compilation timestamps. While a
+  system key is arming, the other LEDs turn off and the Numpad indicator blinks
+  red; after confirmation, it turns yellow briefly before the action runs.
 
 > **Caution:** Make and Shift+Make type a command followed by Enter. Use them
 > only while a trusted terminal is focused.

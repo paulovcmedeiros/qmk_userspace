@@ -25,8 +25,8 @@
 #define COMBO_MUST_TAP_PER_COMBO
 #define COMBO_SHOULD_TRIGGER
 
-/* Allow the primary half to request the secondary half's build date. */
-#define SPLIT_TRANSACTION_IDS_USER BUILD_DATE_SYNC
+/* Synchronize build dates and system-action feedback between halves. */
+#define SPLIT_TRANSACTION_IDS_USER BUILD_DATE_SYNC, SYSTEM_ACTION_FEEDBACK_SYNC
 
 /* Keep Solid Color and Alphas/Mods; omit unused RGB animations. */
 #undef ENABLE_RGB_MATRIX_BREATHING

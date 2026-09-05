@@ -16,6 +16,7 @@
     "Both Shift keys activate Caps Word; Auto Shift can be toggled from Base.",
     "Key Lock locks the next basic key; pressing Key Lock again releases it.",
     "All system keys require a two-second hold.",
+    "System-key RGB feedback: other LEDs turn off; Numpad blinks red while arming and turns yellow when confirmed.",
     "Make builds normally; Shift+Make flashes; Ctrl+Shift+Make enters the bootloader.",
     "EEPROM Clear erases persisted QMK settings and restarts the keyboard.",
     "Python and Bash shebang keys type the complete line followed by Enter.",

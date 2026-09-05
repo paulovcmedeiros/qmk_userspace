@@ -59,8 +59,24 @@ enum combo_events {
 };
 
 #define HOLD_ACTION_TERM 2000
+#define HOLD_ACTION_CONFIRMED_TERM 250
+#define HOLD_ACTION_BLINK_TERM 250
+#define HOLD_ACTION_SYNC_RETRY_TERM 50
 #define MOUSE_DOUBLE_TAP_TERM 100
 #define THUMBS_ENTER_COMBO_TERM 30
+
+typedef enum {
+    SYSTEM_ACTION_NONE,
+    SYSTEM_ACTION_MAKE,
+    SYSTEM_ACTION_EE_CLEAR,
+    SYSTEM_ACTION_SHOW_VERSION,
+} system_action_t;
+
+typedef enum {
+    SYSTEM_ACTION_FEEDBACK_IDLE,
+    SYSTEM_ACTION_FEEDBACK_ARMING,
+    SYSTEM_ACTION_FEEDBACK_CONFIRMED,
+} system_action_feedback_t;
 
 // Physical RGB matrix indexes reserved for status indicators.
 enum indicator_leds {
@@ -131,16 +147,16 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
     return combo_index != THUMBS_ENTER || !(get_mods() & (MOD_MASK_SHIFT | MOD_MASK_ALT));
 }
 
-static matrix_row_t intercepted_space_taps[MATRIX_ROWS];
-static bool         hold_make_pressed;
-static uint16_t     hold_make_timer;
-static bool         hold_ee_clear_pressed;
-static uint16_t     hold_ee_clear_timer;
-static bool         hold_show_version_pressed;
-static uint16_t     hold_show_version_timer;
-static bool         show_version_pending;
-static bool         key_lock_pending;
-static uint16_t     locked_keycode = KC_NO;
+static matrix_row_t             intercepted_space_taps[MATRIX_ROWS];
+static system_action_t          system_action;
+static system_action_feedback_t system_action_feedback;
+static uint16_t                 system_action_timer;
+static uint8_t                  system_action_mods;
+static bool                     system_action_feedback_sync_pending = true;
+static uint16_t                 system_action_feedback_sync_timer;
+static bool                     show_version_pending;
+static bool                     key_lock_pending;
+static uint16_t                 locked_keycode = KC_NO;
 
 typedef struct {
     uint16_t press_timer;
@@ -183,12 +199,28 @@ typedef struct {
     char build_date[sizeof(QMK_BUILDDATE)];
 } build_date_t;
 
+typedef struct {
+    uint8_t feedback;
+} system_action_feedback_sync_t;
+
 /** Return this half's build date to the primary half. */
 static void build_date_sync_handler(uint8_t in_buflen, const void *in_data, uint8_t out_buflen, void *out_data) {
     if (out_buflen == sizeof(build_date_t)) {
         build_date_t *response = out_data;
 
         memcpy(response->build_date, QMK_BUILDDATE, sizeof(response->build_date));
+    }
+}
+
+/** Mirror the primary half's system-action feedback on the secondary half. */
+static void system_action_feedback_sync_handler(uint8_t in_buflen, const void *in_data, uint8_t out_buflen, void *out_data) {
+    if (in_buflen == sizeof(system_action_feedback_sync_t)) {
+        const system_action_feedback_sync_t *sync = in_data;
+
+        if (sync->feedback <= SYSTEM_ACTION_FEEDBACK_CONFIRMED) {
+            system_action_feedback = sync->feedback;
+            system_action_timer    = timer_read();
+        }
     }
 }
 
@@ -220,10 +252,22 @@ static void send_build_dates(void) {
 
 void keyboard_post_init_user(void) {
     transaction_register_rpc(BUILD_DATE_SYNC, build_date_sync_handler);
+    transaction_register_rpc(SYSTEM_ACTION_FEEDBACK_SYNC, system_action_feedback_sync_handler);
 }
 
 void housekeeping_task_user(void) {
-    if (show_version_pending && is_keyboard_master()) {
+    if (!is_keyboard_master()) {
+        return;
+    }
+
+    if (system_action_feedback_sync_pending && timer_elapsed(system_action_feedback_sync_timer) >= HOLD_ACTION_SYNC_RETRY_TERM) {
+        system_action_feedback_sync_t sync = {.feedback = system_action_feedback};
+
+        system_action_feedback_sync_pending = !transaction_rpc_send(SYSTEM_ACTION_FEEDBACK_SYNC, sizeof(sync), &sync);
+        system_action_feedback_sync_timer   = timer_read();
+    }
+
+    if (show_version_pending) {
         show_version_pending = false;
         send_build_dates();
     }
@@ -277,6 +321,62 @@ static void send_home_slash_hold(void) {
 static void send_space_minus_hold(void) {
     SEND_STRING(" -");
     space_minus.hold_sent = true;
+}
+
+/** Change the RGB feedback phase and schedule a matching update for the other half. */
+static void set_system_action_feedback(system_action_feedback_t feedback) {
+    system_action_feedback              = feedback;
+    system_action_timer                 = timer_read();
+    system_action_feedback_sync_pending = true;
+}
+
+/** Arm or cancel one of the protected system actions. */
+static void process_system_action(system_action_t action, keyrecord_t *record) {
+    if (record->event.pressed) {
+        if (system_action == SYSTEM_ACTION_NONE) {
+            system_action = action;
+            set_system_action_feedback(SYSTEM_ACTION_FEEDBACK_ARMING);
+        }
+    } else if (system_action == action && system_action_feedback == SYSTEM_ACTION_FEEDBACK_ARMING) {
+        system_action = SYSTEM_ACTION_NONE;
+        set_system_action_feedback(SYSTEM_ACTION_FEEDBACK_IDLE);
+    }
+}
+
+/** Execute a confirmed system action after its visual acknowledgement. */
+static void perform_system_action(void) {
+    switch (system_action) {
+        case SYSTEM_ACTION_MAKE:
+            if ((system_action_mods & MOD_MASK_SHIFT) && (system_action_mods & MOD_MASK_CTRL)) {
+                reset_keyboard();
+            } else if (system_action_mods & MOD_MASK_SHIFT) {
+                clear_mods();
+                SEND_STRING_DELAY("f=\"$(qmk userspace-path)/yushakobo_ergo68_paulovcmedeiros.hex\"; "
+                                  "if test -f \"$f\"; then qmk flash \"$f\"; "
+                                  "else qmk flash -kb yushakobo/ergo68 -km paulovcmedeiros; fi" SS_TAP(X_ENTER),
+                                  TAP_CODE_DELAY);
+            } else {
+                keyrecord_t make_record = {.event.pressed = true};
+
+                process_quantum(QK_MAKE, &make_record);
+            }
+            break;
+
+        case SYSTEM_ACTION_EE_CLEAR:
+            eeconfig_disable();
+            soft_reset_keyboard();
+            break;
+
+        case SYSTEM_ACTION_SHOW_VERSION:
+            show_version_pending = true;
+            break;
+
+        case SYSTEM_ACTION_NONE:
+            break;
+    }
+
+    system_action = SYSTEM_ACTION_NONE;
+    set_system_action_feedback(SYSTEM_ACTION_FEEDBACK_IDLE);
 }
 
 /** Return whether this event represents a plain or dual-role Space tap. */
@@ -454,24 +554,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         case HOLD_MAKE:
-            hold_make_pressed = record->event.pressed;
-            if (record->event.pressed) {
-                hold_make_timer = timer_read();
-            }
+            process_system_action(SYSTEM_ACTION_MAKE, record);
             return false;
 
         case HOLD_EE_CLEAR:
-            hold_ee_clear_pressed = record->event.pressed;
-            if (record->event.pressed) {
-                hold_ee_clear_timer = timer_read();
-            }
+            process_system_action(SYSTEM_ACTION_EE_CLEAR, record);
             return false;
 
         case HOLD_SHOW_VERSION:
-            hold_show_version_pressed = record->event.pressed;
-            if (record->event.pressed) {
-                hold_show_version_timer = timer_read();
-            }
+            process_system_action(SYSTEM_ACTION_SHOW_VERSION, record);
             return false;
     }
 
@@ -496,36 +587,13 @@ void matrix_scan_user(void) {
         send_space_minus_hold();
     }
 
-    if (hold_make_pressed && timer_elapsed(hold_make_timer) >= HOLD_ACTION_TERM) {
-        uint8_t mods = mod_config(get_mods());
-
-        hold_make_pressed = false;
-        if ((mods & MOD_MASK_SHIFT) && (mods & MOD_MASK_CTRL)) {
-            reset_keyboard();
-        } else if (mods & MOD_MASK_SHIFT) {
-            clear_mods();
-            SEND_STRING_DELAY(
-                "f=\"$(qmk userspace-path)/yushakobo_ergo68_paulovcmedeiros.hex\"; "
-                "if test -f \"$f\"; then qmk flash \"$f\"; "
-                "else qmk flash -kb yushakobo/ergo68 -km paulovcmedeiros; fi"
-                SS_TAP(X_ENTER),
-                TAP_CODE_DELAY);
-        } else {
-            keyrecord_t make_record = {.event.pressed = true};
-
-            process_quantum(QK_MAKE, &make_record);
+    if (system_action_feedback == SYSTEM_ACTION_FEEDBACK_ARMING && timer_elapsed(system_action_timer) >= HOLD_ACTION_TERM) {
+        if (system_action == SYSTEM_ACTION_MAKE) {
+            system_action_mods = mod_config(get_mods());
         }
-    }
-
-    if (hold_ee_clear_pressed && timer_elapsed(hold_ee_clear_timer) >= HOLD_ACTION_TERM) {
-        hold_ee_clear_pressed = false;
-        eeconfig_disable();
-        soft_reset_keyboard();
-    }
-
-    if (hold_show_version_pressed && timer_elapsed(hold_show_version_timer) >= HOLD_ACTION_TERM) {
-        hold_show_version_pressed = false;
-        show_version_pending      = true;
+        set_system_action_feedback(SYSTEM_ACTION_FEEDBACK_CONFIRMED);
+    } else if (system_action_feedback == SYSTEM_ACTION_FEEDBACK_CONFIRMED && timer_elapsed(system_action_timer) >= HOLD_ACTION_CONFIRMED_TERM) {
+        perform_system_action();
     }
 }
 
@@ -544,6 +612,19 @@ static void set_lock_indicator(uint8_t led, bool active, uint8_t led_min, uint8_
 }
 
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (system_action_feedback != SYSTEM_ACTION_FEEDBACK_IDLE) {
+        for (uint8_t i = led_min; i < led_max; i++) {
+            rgb_matrix_set_color(i, 0, 0, 0);
+        }
+
+        if (system_action_feedback == SYSTEM_ACTION_FEEDBACK_CONFIRMED) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(NUMPAD_LAYER_LED, 128, 128, 0);
+        } else if (timer_elapsed(system_action_timer) % (HOLD_ACTION_BLINK_TERM * 2) < HOLD_ACTION_BLINK_TERM) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(NUMPAD_LAYER_LED, 128, 0, 0);
+        }
+        return false;
+    }
+
     led_t host_leds = host_keyboard_led_state();
 
     set_lock_indicator(CAPS_LOCK_LED, host_leds.caps_lock, led_min, led_max);
