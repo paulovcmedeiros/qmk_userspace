@@ -95,8 +95,8 @@ keymap-drawer's layer highlighting.
 The script extracts the simple
 [QMK combo](https://docs.qmk.fm/features/combo) definitions used here into
 `keymap-combos.yaml` so that they appear in the drawing. The combo labels use
-the same declarative mappings as the keys. If conversion, metadata validation,
-or rendering fails, the previous SVG is kept in place.
+the `combo_labels` mapping in `keymap-documentation.json`. If conversion,
+metadata validation, or rendering fails, the previous SVG is kept in place.
 
 The browser preview uses `http://127.0.0.1:8000` when that port is available.
 If another process is already using it, the watcher automatically selects an
