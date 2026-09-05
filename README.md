@@ -15,4 +15,6 @@ Render the Ergo68 keymap diagram once from the userspace root with:
 ```
 
 Run `./watch-ergo68-keymap.py` without `--once` to watch the keymap and its
-documentation metadata and refresh a browser preview after changes.
+documentation metadata and refresh a browser preview after changes. Rendering
+and parsing options are configured in `keymap_drawer_config.yaml`; changes to
+that file also trigger a redraw.

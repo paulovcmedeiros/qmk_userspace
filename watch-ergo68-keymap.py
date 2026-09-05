@@ -85,6 +85,7 @@ DEFAULT_SOURCE = KEYMAP_DIR / "keymap.c"
 DEFAULT_OUTPUT = KEYMAP_DIR / "keymap.svg"
 DEFAULT_COMBOS_OUTPUT = KEYMAP_DIR / "keymap-combos.yaml"
 DOCUMENTATION_SOURCE = KEYMAP_DIR / "keymap-documentation.json"
+DRAWER_CONFIG_SOURCE = USERSPACE_ROOT / "keymap_drawer_config.yaml"
 
 SVG_ROOT_PATTERN = re.compile(
     r'^<svg width="(?P<width>\d+)" height="(?P<height>\d+)" '
@@ -190,11 +191,15 @@ def load_documentation(path: Path) -> dict[str, object]:
     ):
         raise ValueError("layers must map enum identifiers to display labels")
 
-    drawer_config = data.get("keymap_drawer")
-    if not isinstance(drawer_config, dict) or not isinstance(
-        drawer_config.get("parse_config"), dict
+    combo_labels = data.get("combo_labels")
+    if not isinstance(combo_labels, dict) or not all(
+        isinstance(keycode, str)
+        and keycode
+        and isinstance(label, str)
+        and label
+        for keycode, label in combo_labels.items()
     ):
-        raise ValueError("keymap_drawer.parse_config must be an object")
+        raise ValueError("combo_labels must map keycodes to display labels")
 
     behavior_notes = data.get("behavior_notes")
     if not isinstance(behavior_notes, list) or not all(
@@ -220,13 +225,10 @@ def resolve_layer_taps(keymap_json: bytes, layer_identifiers: list[str]) -> byte
     return json.dumps(keymap_data).encode()
 
 
-def keycode_label(keycode: str, raw_binding_map: dict[str, object]) -> str:
-    """Return a configured tap label, falling back to a compact keycode name."""
-    key_spec = raw_binding_map.get(keycode)
-    if isinstance(key_spec, str):
-        return key_spec
-    if isinstance(key_spec, dict) and isinstance(key_spec.get("t"), str):
-        return key_spec["t"]
+def keycode_label(keycode: str, combo_labels: dict[str, str]) -> str:
+    """Return a documented combo label, falling back to a compact keycode name."""
+    if keycode in combo_labels:
+        return combo_labels[keycode]
     return keycode.removeprefix("KC_").replace("_", " ")
 
 
@@ -235,7 +237,7 @@ def generate_combos_overlay(
     keymap_json: bytes,
     output: Path,
     base_layer_name: str,
-    raw_binding_map: dict[str, object],
+    combo_labels: dict[str, str],
 ) -> None:
     """Extract simple QMK COMBO definitions and write a keymap-drawer overlay."""
     source_text = source.read_text(encoding="utf-8")
@@ -290,7 +292,7 @@ def generate_combos_overlay(
             combo_entries.append(
                 (
                     positions,
-                    keycode_label(result_keycode.strip(), raw_binding_map),
+                    keycode_label(result_keycode.strip(), combo_labels),
                     align,
                 )
             )
@@ -463,25 +465,18 @@ def render(
     info_json = work_dir / "info.json"
     parsed_yaml = work_dir / "keymap.yaml"
     rendered_svg = work_dir / "keymap.svg"
-    drawer_config = work_dir / "keymap-drawer.json"
     try:
         documentation = load_documentation(DOCUMENTATION_SOURCE)
         layers = documentation["layers"]
-        keymap_drawer = documentation["keymap_drawer"]
+        combo_labels = documentation["combo_labels"]
         behavior_notes = documentation["behavior_notes"]
 
         assert isinstance(layers, dict)
-        assert isinstance(keymap_drawer, dict)
+        assert isinstance(combo_labels, dict)
         assert isinstance(behavior_notes, list)
         layer_identifiers = list(layers)
         layer_names = list(layers.values())
-        parse_config = keymap_drawer["parse_config"]
-        assert isinstance(parse_config, dict)
-        raw_binding_map = parse_config.get("raw_binding_map", {})
-        if not isinstance(raw_binding_map, dict):
-            raise ValueError("raw_binding_map must be an object")
 
-        drawer_config.write_text(json.dumps(keymap_drawer), encoding="utf-8")
         converted = subprocess.run(
             [
                 commands["qmk"],
@@ -502,14 +497,14 @@ def render(
             converted.stdout,
             DEFAULT_COMBOS_OUTPUT,
             layer_names[0],
-            raw_binding_map,
+            combo_labels,
         )
         drawer_keymap = resolve_layer_taps(converted.stdout, layer_identifiers)
         subprocess.run(
             [
                 commands["keymap"],
                 "-c",
-                str(drawer_config),
+                str(DRAWER_CONFIG_SOURCE),
                 "parse",
                 "-q",
                 "-",
@@ -526,7 +521,7 @@ def render(
             [
                 commands["keymap"],
                 "-c",
-                str(drawer_config),
+                str(DRAWER_CONFIG_SOURCE),
                 "draw",
                 "-j",
                 str(info_json),
@@ -572,6 +567,9 @@ def main() -> int:
     if not output.parent.is_dir():
         log(f"output directory not found: {output.parent}", error=True)
         return 1
+    if not DRAWER_CONFIG_SOURCE.is_file():
+        log(f"config file not found: {DRAWER_CONFIG_SOURCE}", error=True)
+        return 1
 
     open_browser = not args.once and not args.no_open
     try:
@@ -610,10 +608,11 @@ def main() -> int:
                 viewer = LiveViewer(temp_dir)
                 viewer.start(output)
 
-            watched_files = (source, DOCUMENTATION_SOURCE)
+            watched_files = (source, DOCUMENTATION_SOURCE, DRAWER_CONFIG_SOURCE)
             previous_signatures = tuple(file_signature(path) for path in watched_files)
             log(
-                f"watching {source} and {DOCUMENTATION_SOURCE} "
+                f"watching {source}, {DOCUMENTATION_SOURCE}, and "
+                f"{DRAWER_CONFIG_SOURCE} "
                 "(press Ctrl-C to stop)"
             )
 

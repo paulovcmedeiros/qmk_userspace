@@ -84,10 +84,13 @@ this keymap. It renders `keymap.c` to `keymap.svg`, watches the source for
 changes, and updates a browser preview after each successful render. It also
 watches
 `keymap-documentation.json`, which provides human-readable layer names, rich
-legends for custom behaviors, and the behavior notes appended to the SVG.
-Its layer mapping also lets `keymap.c` use the layer enum identifiers directly
-inside QMK's [`LT(...)`](https://docs.qmk.fm/feature_layers) expressions while
-retaining keymap-drawer's layer highlighting.
+combo labels, and the behavior notes appended to the SVG. The userspace-root
+`keymap_drawer_config.yaml` controls keymap-drawer's parsing, key labels, SVG
+dimensions, and styling. Changes to either file trigger a redraw. The layer
+mapping in `keymap-documentation.json` also lets `keymap.c` use the layer enum
+identifiers directly inside QMK's
+[`LT(...)`](https://docs.qmk.fm/feature_layers) expressions while retaining
+keymap-drawer's layer highlighting.
 
 The script extracts the simple
 [QMK combo](https://docs.qmk.fm/features/combo) definitions used here into
@@ -135,14 +138,15 @@ provides quicker visual feedback during that process.
 | File | Purpose |
 | --- | --- |
 | `keymap.c`, `config.h`, `rules.mk` | Firmware mapping, behavior, and configuration |
-| `keymap-documentation.json` | Layer names, custom legends, notes, and SVG styling |
+| `keymap-documentation.json` | Layer names, combo labels, and behavior notes |
+| `keymap_drawer_config.yaml` (userspace root) | Key labels and keymap-drawer parsing and SVG options |
 | `keymap.svg` | Generated diagram; regenerate and commit it |
 | `keymap-combos.yaml` | Generated intermediate; never edit it |
 
 The `layers` mapping in `keymap-documentation.json` must follow the order of
 `enum layer_names` in `keymap.c`. The watcher does not infer arbitrary behavior
-from the C event hooks, so update its legends and notes when those behaviors
-change. Regenerate once without starting the live viewer with:
+from the C event hooks, so update its config labels and documentation notes when
+those behaviors change. Regenerate once without starting the live viewer with:
 
 ```sh
 ./watch-ergo68-keymap.py --once
