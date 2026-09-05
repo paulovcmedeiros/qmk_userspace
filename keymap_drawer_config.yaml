@@ -32,7 +32,46 @@ draw_config:
         svg.keymap { font-size: 10px; }
         text:is(.combo,.hold,.shifted,.left,.right,.tl,.tr,.bl,.br) { font-size: 8px; }
         text.combo:is(.hold,.shifted,.left,.right) { font-size: 7px; }
-        text.label { font-size: 16px; letter-spacing: 0.04em; }
+        text.label {
+            font-size: 16px;
+            letter-spacing: 0.04em;
+            stroke: none;
+            paint-order: normal;
+        }
+        text.layer-activator {
+            text-decoration: none;
+            font-weight: bold;
+        }
+        path.combo {
+            stroke-width: 0.8;
+            opacity: 0.8;
+        }
+        g.layer-Mouse > text.label,
+        a[href="#Mouse"] text.layer-activator {
+            fill: #0969da;
+        }
+        g.layer-Numpad > text.label,
+        a[href="#Numpad"] text.layer-activator {
+            fill: #9a6700;
+        }
+        g.layer-Symbols > text.label,
+        a[href="#Symbols"] text.layer-activator {
+            fill: #1a7f37;
+        }
+        @media (prefers-color-scheme: dark) {
+            g.layer-Mouse > text.label,
+            a[href="#Mouse"] text.layer-activator {
+                fill: #58a6ff;
+            }
+            g.layer-Numpad > text.label,
+            a[href="#Numpad"] text.layer-activator {
+                fill: #d29922;
+            }
+            g.layer-Symbols > text.label,
+            a[href="#Symbols"] text.layer-activator {
+                fill: #3fb950;
+            }
+        }
     footer_text: ""
     shrink_wide_legends: 7
     style_layer_activators: true
