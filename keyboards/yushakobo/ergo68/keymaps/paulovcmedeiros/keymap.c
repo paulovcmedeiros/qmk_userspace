@@ -198,7 +198,7 @@ static void send_build_dates(void) {
     build_date_t secondary = {0};
     bool         received  = transaction_rpc_recv(BUILD_DATE_SYNC, sizeof(secondary), &secondary);
 
-    SEND_STRING("*** Yushakobo Ergo68, paulovcmedeiros firmware. Compilation datetimes: < L: ");
+    SEND_STRING("*** Yushakobo Ergo68 QMK firmware - keymap: paulovcmedeiros - build timestamps: < L: ");
     if (is_keyboard_left()) {
         send_string(local.build_date);
     } else if (received) {
@@ -505,7 +505,7 @@ void matrix_scan_user(void) {
         } else if (mods & MOD_MASK_SHIFT) {
             clear_mods();
             SEND_STRING_DELAY(
-                "f=\"$(qmk env QMK_HOME)/yushakobo_ergo68_paulovcmedeiros.hex\"; "
+                "f=\"$(qmk userspace-path)/yushakobo_ergo68_paulovcmedeiros.hex\"; "
                 "if test -f \"$f\"; then qmk flash \"$f\"; "
                 "else qmk flash -kb yushakobo/ergo68 -km paulovcmedeiros; fi"
                 SS_TAP(X_ENTER),

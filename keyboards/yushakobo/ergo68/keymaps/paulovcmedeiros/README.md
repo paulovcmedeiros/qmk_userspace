@@ -67,7 +67,7 @@ same firmware to each half separately, resetting the half being flashed when
 QMK prompts. See QMK's [flashing guide](https://docs.qmk.fm/newbs_flashing).
 
 Shift+Make first looks for
-`$(qmk env QMK_HOME)/yushakobo_ergo68_paulovcmedeiros.hex`; if it is absent, it
+`$(qmk userspace-path)/yushakobo_ergo68_paulovcmedeiros.hex`; if it is absent, it
 falls back to the build-and-flash command above.
 
 In [External QMK Userspace](https://docs.qmk.fm/newbs_external_userspace),
