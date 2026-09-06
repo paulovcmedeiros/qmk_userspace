@@ -12,9 +12,9 @@ External Userspace.
 
 ## Host keyboard layout
 
-Designed for [EurKEY](https://eurkey.steffen.bruentjen.eu/): US-compatible
-programming symbols and AltGr support for writing in languages requiring special characters
-without the need for US International's dead keys.
+Designed for [EurKEY](https://eurkey.steffen.bruentjen.eu/): it preserves the
+US layout for programming symbols and provides European letters through AltGr,
+without making common punctuation keys dead keys.
 
 Plain US supports the ASCII letters and symbols but lacks EurKEY's AltGr
 behavior. Other host layouts require reviewing printable keycodes and
