@@ -28,9 +28,10 @@ This performs a clean firmware build.
 ## GitHub builds
 
 This repo's [workflow](.github/workflows/build_binaries.yaml) builds upstream
-QMK `master`; local builds use your checkout. Successful builds on `main`
-replace `latest`. Branch builds provide a `Firmware` artifact under
-[Actions](https://github.com/paulovcmedeiros/qmk_userspace/actions).
+QMK `master`; local builds use your checkout. Firmware changes pushed to `main`
+or `develop` build automatically. Other branches can be run manually under
+[Actions](https://github.com/paulovcmedeiros/qmk_userspace/actions). Successful
+builds on `main` replace `latest`.
 
 Keep a `.hex` tested on both halves for rollback; `latest` is replaced by
 subsequent builds.

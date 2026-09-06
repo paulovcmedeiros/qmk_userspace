@@ -1,6 +1,24 @@
 name: Build QMK firmware
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.devcontainer/**'
+      - '.vscode/**'
+      - '.clang*'
+      - '.editorconfig'
+      - '**/.gitignore'
+      - 'watch-ergo68-keymap.py'
+      - 'keymap_drawer_config.yaml'
+      - '**/keymap-documentation.json'
+      - '**/keymap.svg'
+      - '**/keymap-combos.yaml'
+  workflow_dispatch:
 
 permissions:
   contents: write
