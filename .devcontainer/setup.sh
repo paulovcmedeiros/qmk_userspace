@@ -4,7 +4,7 @@ set -eEuo pipefail
 
 wget https://bootstrap.pypa.io/get-pip.py
 python3 get-pip.py
-python3 -m pip install qmk
+python3 -m pip install qmk keymap-drawer
 rm get-pip.py
 
 python3 -m pip install --upgrade milc
