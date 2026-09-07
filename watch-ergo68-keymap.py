@@ -88,11 +88,6 @@ DEFAULT_COMBOS_OUTPUT = KEYMAP_DIR / "keymap-combos.yaml"
 DOCUMENTATION_SOURCE = KEYMAP_DIR / "keymap-documentation.json"
 DRAWER_CONFIG_SOURCE = USERSPACE_ROOT / "keymap_drawer_config.yaml"
 
-SVG_ROOT_PATTERN = re.compile(
-    r'^<svg width="(?P<width>\d+)" height="(?P<height>\d+)" '
-    r'viewBox="0 0 (?P<view_width>\d+) (?P<view_height>\d+)"'
-)
-
 
 def log(message: str, *, error: bool = False) -> None:
     """Write a prefixed message to standard output or standard error."""
@@ -202,12 +197,6 @@ def load_documentation(path: Path) -> dict[str, object]:
     ):
         raise ValueError("combo_labels must map keycodes to display labels")
 
-    behavior_notes = data.get("behavior_notes")
-    if not isinstance(behavior_notes, list) or not all(
-        isinstance(note, str) and note for note in behavior_notes
-    ):
-        raise ValueError("behavior_notes must be a list of non-empty strings")
-
     return data
 
 
@@ -316,65 +305,14 @@ def generate_combos_overlay(
     temporary.replace(output)
 
 
-def add_svg_documentation(svg: Path, title: str, notes: list[str]) -> None:
-    """Add an accessible title and behavior-notes panel to a keymap-drawer SVG."""
+def add_svg_title(svg: Path, title: str) -> None:
+    """Add an accessible title to a keymap-drawer SVG."""
     contents = svg.read_text(encoding="utf-8")
-    root_match = SVG_ROOT_PATTERN.match(contents)
-    if root_match is None:
-        raise ValueError("could not read the generated SVG dimensions")
-
-    width = int(root_match.group("width"))
-    height = int(root_match.group("height"))
-    view_width = int(root_match.group("view_width"))
-    view_height = int(root_match.group("view_height"))
-    if (width, height) != (view_width, view_height):
-        raise ValueError("generated SVG has mismatched dimensions and viewBox")
-
-    panel_margin = 20
-    panel_padding = 20
-    title_height = 30
-    line_height = 20
-    panel_height = panel_padding * 2 + title_height + line_height * len(notes)
-    new_height = height + panel_height + panel_margin * 2
-    new_root = (
-        f'<svg width="{width}" height="{new_height}" '
-        f'viewBox="0 0 {width} {new_height}"'
-    )
-    contents = new_root + contents[root_match.end() :]
-
     root_tag_end = contents.find(">\n")
     if root_tag_end == -1:
         raise ValueError("generated SVG has no complete root tag")
     title_element = f"<title>{escape(title)}</title>\n"
     contents = contents[: root_tag_end + 2] + title_element + contents[root_tag_end + 2 :]
-
-    panel_x = panel_margin
-    panel_y = height + panel_margin
-    text_x = panel_x + panel_padding
-    note_y = panel_y + panel_padding + title_height + line_height / 2
-    panel = [
-        '<g class="behavior-notes">',
-        (
-            f'<rect x="{panel_x}" y="{panel_y}" '
-            f'width="{width - 2 * panel_margin}" height="{panel_height}" '
-            'rx="6" class="key"/>'
-        ),
-        (
-            f'<text x="{text_x}" y="{panel_y + panel_padding + title_height / 2}" '
-            'style="text-anchor: start; font-weight: bold">Behavior notes</text>'
-        ),
-    ]
-    for index, note in enumerate(notes):
-        panel.append(
-            f'<text x="{text_x}" y="{note_y + index * line_height}" '
-            f'style="text-anchor: start; font-size: 12px">• {escape(note)}</text>'
-        )
-    panel.append("</g>")
-
-    closing_tag = "</svg>"
-    if closing_tag not in contents:
-        raise ValueError("generated SVG has no closing tag")
-    contents = contents.replace(closing_tag, "\n".join(panel) + "\n" + closing_tag, 1)
     svg.write_text(contents, encoding="utf-8")
 
 
@@ -473,11 +411,9 @@ def render(
         documentation = load_documentation(DOCUMENTATION_SOURCE)
         layers = documentation["layers"]
         combo_labels = documentation["combo_labels"]
-        behavior_notes = documentation["behavior_notes"]
 
         assert isinstance(layers, dict)
         assert isinstance(combo_labels, dict)
-        assert isinstance(behavior_notes, list)
         layer_identifiers = list(layers)
         layer_names = list(layers.values())
 
@@ -539,11 +475,7 @@ def render(
             cwd=USERSPACE_ROOT,
             check=True,
         )
-        add_svg_documentation(
-            rendered_svg,
-            f"{KEYBOARD_DISPLAY_NAME} keymap",
-            behavior_notes,
-        )
+        add_svg_title(rendered_svg, f"{KEYBOARD_DISPLAY_NAME} keymap")
     except (OSError, json.JSONDecodeError, KeyError, ValueError) as error:
         log(f"could not prepare drawing metadata: {error}", error=True)
         log("render failed; keeping the previous SVG", error=True)
