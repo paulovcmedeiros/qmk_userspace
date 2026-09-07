@@ -7,21 +7,5 @@
   },
   "combo_labels": {
     "KC_ENT": "Enter"
-  },
-  "behavior_notes": [
-    "Tap-hold term: 150 ms; another key press resolves the ~/ and ␠- holds immediately.",
-    "Shift or Alt plus a tapped Space sends Backspace instead.",
-    "Mouse directions: double-tap within 100 ms, then hold for maximum acceleration.",
-    "Mouse + Symbols thumbs: Enter on Base, tap-only within 30 ms, and disabled while Shift or Alt is held.",
-    "Both Shift keys activate Caps Word; Auto Shift can be toggled from Base.",
-    "Key Lock locks the next basic key; pressing Key Lock again releases it.",
-    "All system keys require a two-second hold.",
-    "System-key RGB feedback: other LEDs turn off; Numpad blinks red while arming and turns yellow when confirmed.",
-    "Make builds normally; Shift+Make flashes; Ctrl+Shift+Make enters the bootloader.",
-    "EEPROM Clear erases persisted QMK settings and restarts the keyboard.",
-    "Python and Bash shebang keys type the complete line followed by Enter.",
-    "Build dates reports the firmware compilation datetime for each keyboard half.",
-    "RGB status: Caps/Num/Scroll locks and Mouse are blue; Numpad is orange; Symbols is green.",
-    "Host layout: EurKEY; printable symbols and macros assume its US-compatible positions."
-  ]
+  }
 }
