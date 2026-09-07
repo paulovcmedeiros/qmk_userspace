@@ -1140,7 +1140,6 @@ a[href="#Symbols"] text.layer-activator {
 <g transform="translate(588, 218)" class="key keypos-48">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
-<text x="0" y="0" class="key tap">%</text>
 </g>
 <g transform="translate(644, 207)" class="key keypos-49">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
@@ -1197,7 +1196,7 @@ a[href="#Symbols"] text.layer-activator {
 <g transform="translate(504, 314)" class="key keypos-61">
 <rect rx="6" ry="6" x="-25" y="-53" width="50" height="106" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-47" width="38" height="94" class="key"/>
-<text x="0" y="0" class="key tap">BSPC</text>
+<text x="0" y="0" class="key tap">RSFT</text>
 </g>
 <g transform="translate(560, 302)" class="key keypos-62">
 <rect rx="6" ry="6" x="-25" y="-53" width="50" height="106" class="key side"/>
@@ -1207,11 +1206,13 @@ a[href="#Symbols"] text.layer-activator {
 <g transform="translate(616, 274)" class="key keypos-63">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
-<text x="0" y="0" class="key tap">BSPC</text>
+<text x="0" y="0" class="key tap">0</text>
+<text x="0" y="-15" class="key shifted">)</text>
 </g>
 <g transform="translate(672, 263)" class="key keypos-64">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
+<text x="0" y="0" class="key tap">RSFT</text>
 </g>
 <g transform="translate(756, 263)" class="key keypos-65">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
