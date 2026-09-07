@@ -86,6 +86,58 @@ parse_config:
         QK_GESC:
             t: Esc
             s: "`"
+        KC_1:
+            t: "1"
+            s: "!"
+        KC_2:
+            t: "2"
+            s: "@"
+        KC_3:
+            t: "3"
+            s: "#"
+        KC_4:
+            t: "4"
+            s: "$"
+        KC_5:
+            t: "5"
+            s: "%"
+        KC_6:
+            t: "6"
+            s: "^"
+        KC_7:
+            t: "7"
+            s: "&"
+        KC_8:
+            t: "8"
+            s: "*"
+        KC_9:
+            t: "9"
+            s: "("
+        KC_0:
+            t: "0"
+            s: ")"
+        KC_GRV:
+            t: "`"
+            s: "~"
+        KC_SCLN:
+            t: ";"
+            s: ":"
+        KC_QUOT:
+            t: "'"
+            s: '"'
+        KC_COMM:
+            t: ","
+            s: "<"
+        KC_DOT:
+            t: "."
+            s: ">"
+        KC_SLSH:
+            t: "/"
+            s: "?"
+        LCTL_T(KC_BSLS):
+            t: \
+            h: LCTL
+            s: "|"
         QK_LOCK: Key lock
         AS_TOGG: Auto Shift
         UG_TOGG: RGB toggle
