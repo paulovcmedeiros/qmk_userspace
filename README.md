@@ -34,6 +34,8 @@ behavior. Other host layouts require reviewing printable keycodes and
   hold.
 - Both Shifts activate Caps Word. Auto Shift can be toggled, and Key Lock locks
   the next basic key until that key or Key Lock is pressed again.
+- On each layer, LEDs under unassigned keys are turned off. Transparent keys,
+  which inherit their action from a lower layer, remain illuminated.
 - System keys require a two-second hold. Make types and submits the QMK compile
   command, Shift+Make does the same for flash, Ctrl+Shift+Make enters the
   bootloader, EEPROM Clear erases persisted QMK settings and restarts the

@@ -157,10 +157,27 @@ static void set_lock_indicator(uint8_t led, bool active, uint8_t led_min, uint8_
     }
 }
 
+/** Turn off key LEDs that have no action on the active layer. */
+static void turn_off_unassigned_keys(uint8_t led_min, uint8_t led_max) {
+    uint8_t layer = get_highest_layer(layer_state);
+
+    for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
+        for (uint8_t col = 0; col < MATRIX_COLS; col++) {
+            uint8_t led = g_led_config.matrix_co[row][col];
+
+            if (led >= led_min && led < led_max && led != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col, row}) == KC_NO) {
+                rgb_matrix_set_color(led, RGB_OFF);
+            }
+        }
+    }
+}
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     if (system_actions_indicators(NUMPAD_LAYER_LED, led_min, led_max)) {
         return false;
     }
+
+    turn_off_unassigned_keys(led_min, led_max);
 
     led_t host_leds = host_keyboard_led_state();
 
