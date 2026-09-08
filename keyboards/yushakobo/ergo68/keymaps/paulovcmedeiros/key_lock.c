@@ -19,6 +19,10 @@
 static bool     key_lock_pending;
 static uint16_t locked_keycode = KC_NO;
 
+bool key_lock_is_active(void) {
+    return key_lock_pending || locked_keycode != KC_NO;
+}
+
 /**
  * Let QK_LOCK release the key it locked, in addition to its default behavior.
  *

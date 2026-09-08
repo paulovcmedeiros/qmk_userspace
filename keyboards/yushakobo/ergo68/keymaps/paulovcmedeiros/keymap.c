@@ -114,10 +114,12 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
 
 void keyboard_post_init_user(void) {
     system_actions_init();
+    mode_indicators_init();
 }
 
 void housekeeping_task_user(void) {
     system_actions_housekeeping_task();
+    mode_indicators_housekeeping_task();
 }
 
 bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -184,6 +186,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     set_lock_indicator(CAPS_LOCK_LED, host_leds.caps_lock, led_min, led_max);
     set_lock_indicator(NUM_LOCK_LED, host_leds.num_lock, led_min, led_max);
     set_lock_indicator(SCROLL_LOCK_LED, host_leds.scroll_lock, led_min, led_max);
+    mode_indicators_render(BASE, led_min, led_max);
 
     // layer state
     switch (get_highest_layer(layer_state)) {

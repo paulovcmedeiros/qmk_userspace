@@ -9,4 +9,4 @@ KEY_LOCK_ENABLE = yes
 MAGIC_ENABLE = no
 SPACE_CADET_ENABLE = no
 
-SRC += typing_macros.c mouse_acceleration.c key_lock.c system_actions.c
+SRC += typing_macros.c mouse_acceleration.c key_lock.c system_actions.c mode_indicators.c

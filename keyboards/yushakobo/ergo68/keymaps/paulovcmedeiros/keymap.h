@@ -38,10 +38,14 @@ bool process_system_actions(uint16_t keycode, keyrecord_t *record);
 bool process_modified_space(uint16_t keycode, keyrecord_t *record);
 
 bool pre_process_key_lock(uint16_t keycode, keyrecord_t *record);
+bool key_lock_is_active(void);
 void typing_macros_task(void);
 void system_actions_task(void);
 void system_actions_init(void);
 void system_actions_housekeeping_task(void);
+void mode_indicators_init(void);
+void mode_indicators_housekeeping_task(void);
+void mode_indicators_render(uint8_t base_layer, uint8_t led_min, uint8_t led_max);
 
 // Returns true while system-action feedback overrides the normal indicators.
 bool system_actions_indicators(uint8_t indicator_led, uint8_t led_min, uint8_t led_max);

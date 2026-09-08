@@ -25,8 +25,8 @@
 #define COMBO_MUST_TAP_PER_COMBO
 #define COMBO_SHOULD_TRIGGER
 
-/* Synchronize build dates and system-action feedback between halves. */
-#define SPLIT_TRANSACTION_IDS_USER BUILD_DATE_SYNC, SYSTEM_ACTION_FEEDBACK_SYNC
+/* Synchronize custom data and indicator state between halves. */
+#define SPLIT_TRANSACTION_IDS_USER BUILD_DATE_SYNC, SYSTEM_ACTION_FEEDBACK_SYNC, MODE_INDICATOR_SYNC
 
 /* Keep Solid Color and Alphas/Mods; omit unused RGB animations. */
 #undef ENABLE_RGB_MATRIX_BREATHING
