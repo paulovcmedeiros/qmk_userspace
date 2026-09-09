@@ -16,6 +16,8 @@
 
 #include "keymap.h"
 
+#define BRACKET_PAIR_TERM 300
+
 static matrix_row_t intercepted_space_taps[MATRIX_ROWS];
 
 typedef struct {
@@ -42,6 +44,81 @@ static punctuation_space_t punctuation_spaces[] = {
     {SCLN_SP, KC_SCLN},
     {DOT_SP, KC_DOT},
 };
+
+typedef struct {
+    uint16_t expected_closer;
+    uint16_t pending_closer;
+    uint16_t timer;
+    keypos_t closing_key;
+    bool     cursor_left_pending;
+    bool     cursor_left_ready;
+} bracket_pair_state_t;
+
+static bracket_pair_state_t bracket_pair;
+
+static bool key_positions_match(keypos_t first, keypos_t second) {
+    return first.row == second.row && first.col == second.col;
+}
+
+/** Return the closer paired with a Symbols-layer opener. */
+static uint16_t matching_bracket_closer(uint16_t keycode) {
+    switch (keycode) {
+        case S(KC_LBRC):
+            return S(KC_RBRC);
+        case KC_LBRC:
+            return KC_RBRC;
+        case S(KC_9):
+            return S(KC_0);
+        default:
+            return KC_NO;
+    }
+}
+
+/** Track a matching closer pressed immediately after its opener. */
+static void process_bracket_pair(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        bool matching_release = keycode == bracket_pair.pending_closer && key_positions_match(record->event.key, bracket_pair.closing_key);
+
+        if (bracket_pair.cursor_left_pending && matching_release) {
+            bracket_pair.cursor_left_pending = false;
+            bracket_pair.cursor_left_ready   = true;
+        }
+        return;
+    }
+
+    // A key pressed before the pending closer is released cancels the move.
+    bracket_pair.cursor_left_pending = false;
+    bracket_pair.cursor_left_ready   = false;
+
+    uint16_t closer = matching_bracket_closer(keycode);
+    if (closer != KC_NO) {
+        bracket_pair.expected_closer = closer;
+        bracket_pair.timer           = timer_read();
+        return;
+    }
+
+    if (keycode == bracket_pair.expected_closer && timer_elapsed(bracket_pair.timer) <= BRACKET_PAIR_TERM) {
+        bracket_pair.pending_closer      = keycode;
+        bracket_pair.closing_key         = record->event.key;
+        bracket_pair.cursor_left_pending = true;
+    }
+
+    bracket_pair.expected_closer = KC_NO;
+}
+
+/** Tap Left without applying modifiers that remain physically held. */
+static void tap_unmodified_left(void) {
+    uint8_t saved_mods      = get_mods();
+    uint8_t saved_weak_mods = get_weak_mods();
+
+    clear_mods();
+    clear_weak_mods();
+    send_keyboard_report();
+    tap_code(KC_LEFT);
+    set_mods(saved_mods);
+    set_weak_mods(saved_weak_mods);
+    send_keyboard_report();
+}
 
 /** Send the hold action for HOME_SLASH and mark it as resolved. */
 static void send_home_slash_hold(void) {
@@ -107,6 +184,8 @@ bool process_modified_space(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
+    process_bracket_pair(keycode, record);
+
     // Resolve HOME_SLASH as a hold before processing an interrupting key.
     if (record->event.pressed && home_slash.pressed && !home_slash.hold_sent && keycode != HOME_SLASH) {
         send_home_slash_hold();
@@ -177,6 +256,11 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
 }
 
 void typing_macros_task(void) {
+    if (bracket_pair.cursor_left_ready) {
+        bracket_pair.cursor_left_ready = false;
+        tap_unmodified_left();
+    }
+
     for (uint8_t i = 0; i < ARRAY_SIZE(punctuation_spaces); i++) {
         punctuation_space_t *punctuation = &punctuation_spaces[i];
 

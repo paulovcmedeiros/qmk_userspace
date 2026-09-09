@@ -20,7 +20,7 @@ Plain US supports the ASCII letters and symbols but lacks EurKEY's AltGr
 behavior. Other host layouts require reviewing printable keycodes and
 `SEND_STRING` macros.
 
-## Notable behavior
+## Custom behavior
 
 - The thumb Space keys are dual-role. Tapping one while Shift or Alt is held
   sends Backspace instead.
@@ -32,6 +32,8 @@ behavior. Other host layouts require reviewing printable keycodes and
 - The custom punctuation keys append Space when held for 150 ms. The custom
   slash and minus keys select `/` versus `~/`, and `-` versus ` -`, by tap or
   hold.
+- Typing `{}`, `[]`, or `()` within 300 ms moves the cursor between the pair.
+  An intervening keypress cancels the behavior.
 - Both Shifts activate Caps Word. Auto Shift can be toggled, and Key Lock locks
   the next basic key until that key or Key Lock is pressed again.
 - Screen Lock sends `Control+Command+Q` on macOS and `Super+L` on Windows. On
