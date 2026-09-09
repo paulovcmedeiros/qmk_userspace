@@ -73,11 +73,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     // Layer 2: Numpad
     [NUMPAD] = LAYOUT(
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                     XXXXXXX, KC_7,    KC_8, KC_9,    XXXXXXX,     XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, HOLD_MAKE,         XXXXXXX, KC_PSLS, KC_4,    KC_5,     KC_6,    KC_KP_ASTERISK,  XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, HOLD_EE_CLEAR,     XXXXXXX, KC_PMNS, KC_1,    KC_2,     KC_3,    KC_PPLS,         KC_ENTER,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, HOLD_SHOW_VERSION, XXXXXXX, XXXXXXX, KC_DOT,  KC_0,     XXXXXXX, XXXXXXX,         XXXXXXX,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,           KC_RSFT, KC_BSPC, KC_0, KC_RSFT,     XXXXXXX, XXXXXXX,         XXXXXXX
+        SCREEN_LOCK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                     XXXXXXX, KC_7,    KC_8, KC_9,    XXXXXXX,     XXXXXXX,
+        XXXXXXX,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, HOLD_MAKE,         XXXXXXX, KC_PSLS, KC_4,    KC_5,     KC_6,    KC_KP_ASTERISK,  XXXXXXX,
+        XXXXXXX,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, HOLD_EE_CLEAR,     XXXXXXX, KC_PMNS, KC_1,    KC_2,     KC_3,    KC_PPLS,         KC_ENTER,
+        XXXXXXX,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, HOLD_SHOW_VERSION, XXXXXXX, XXXXXXX, KC_DOT,  KC_0,     XXXXXXX, XXXXXXX,         XXXXXXX,
+        XXXXXXX,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,           KC_RSFT, KC_BSPC, KC_0, KC_RSFT,     XXXXXXX, XXXXXXX,         XXXXXXX
     ),
     // Layer 3: Symbols
     [SYMBOLS] = LAYOUT(
@@ -130,6 +130,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     process_fast_mouse_double_tap(keycode, record);
 
     if (!process_typing_macros(keycode, record)) {
+        return false;
+    }
+
+    if (!process_screen_lock(keycode, record)) {
         return false;
     }
 

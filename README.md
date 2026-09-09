@@ -34,6 +34,10 @@ behavior. Other host layouts require reviewing printable keycodes and
   hold.
 - Both Shifts activate Caps Word. Auto Shift can be toggled, and Key Lock locks
   the next basic key until that key or Key Lock is pressed again.
+- Screen Lock sends `Control+Command+Q` on macOS and `Super+L` on Windows. On
+  Linux it sends GNOME's `Super+L`, followed by KDE's `Control+Alt+L`; other or
+  customized desktops may require remapping one of those shortcuts. QMK
+  host-OS detection is best-effort; an uncertain result uses `Super+L`.
 - Active typing modes are shown in magenta: the Auto Shift key while Auto Shift
   is enabled, all Shift keys during Caps Word, and the Key Lock key while it is
   waiting for or holding a key.

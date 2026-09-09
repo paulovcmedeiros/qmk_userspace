@@ -172,6 +172,7 @@ parse_config:
         HOME_SLASH:
             t: /
             h: ~/
+        SCREEN_LOCK: Screen lock
         SP_MINS:
             t: "-"
             h: ␠-

@@ -22,6 +22,7 @@ enum custom_keycodes {
     PYTHON_SHEBANG = SAFE_RANGE,
     BASH_SHEBANG,
     HOME_SLASH,
+    SCREEN_LOCK,
     HOLD_MAKE,
     HOLD_EE_CLEAR,
     HOLD_SHOW_VERSION,
@@ -34,6 +35,7 @@ enum custom_keycodes {
 // Called in order by process_record_user; false consumes the event.
 void process_fast_mouse_double_tap(uint16_t keycode, keyrecord_t *record);
 bool process_typing_macros(uint16_t keycode, keyrecord_t *record);
+bool process_screen_lock(uint16_t keycode, keyrecord_t *record);
 bool process_system_actions(uint16_t keycode, keyrecord_t *record);
 bool process_modified_space(uint16_t keycode, keyrecord_t *record);
 
