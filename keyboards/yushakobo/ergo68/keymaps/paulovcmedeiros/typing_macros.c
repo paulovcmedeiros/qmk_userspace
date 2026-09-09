@@ -17,6 +17,7 @@
 #include "keymap.h"
 
 #define BRACKET_PAIR_TERM 300
+#define BRACKET_PAIR_SHORTCUT_MODS (MOD_MASK_CTRL | MOD_MASK_ALT | MOD_MASK_GUI)
 
 static matrix_row_t intercepted_space_taps[MATRIX_ROWS];
 
@@ -89,6 +90,11 @@ static void process_bracket_pair(uint16_t keycode, keyrecord_t *record) {
     // A key pressed before the pending closer is released cancels the move.
     bracket_pair.cursor_left_pending = false;
     bracket_pair.cursor_left_ready   = false;
+
+    if ((get_mods() | get_weak_mods()) & BRACKET_PAIR_SHORTCUT_MODS) {
+        bracket_pair.expected_closer = KC_NO;
+        return;
+    }
 
     uint16_t closer = matching_bracket_closer(keycode);
     if (closer != KC_NO) {
