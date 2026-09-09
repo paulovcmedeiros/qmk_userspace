@@ -547,9 +547,6 @@ a[href="#Symbols"] text.layer-activator {
 <g transform="translate(812, 286)" class="key keypos-66">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
-<text x="0" y="0" class="key tap">
-<tspan x="0" dy="-0.6em">RGB</tspan><tspan x="0" dy="1.2em">toggle</tspan>
-</text>
 </g>
 <g transform="translate(868, 286)" class="key keypos-67">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
@@ -890,16 +887,10 @@ a[href="#Symbols"] text.layer-activator {
 <g transform="translate(756, 263)" class="key keypos-65">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
-<text x="0" y="0" class="key tap">
-<tspan x="0" dy="-0.6em" style="font-size: 88%">RGB</tspan><tspan x="0" dy="1.2em" style="font-size: 88%">previous</tspan>
-</text>
 </g>
 <g transform="translate(812, 286)" class="key keypos-66">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
-<text x="0" y="0" class="key tap">
-<tspan x="0" dy="-0.6em">RGB</tspan><tspan x="0" dy="1.2em">next</tspan>
-</text>
 </g>
 <g transform="translate(868, 286)" class="key keypos-67">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
@@ -1171,10 +1162,16 @@ a[href="#Symbols"] text.layer-activator {
 <g transform="translate(28, 286)" class="key keypos-54">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
+<text x="0" y="0" class="key tap">
+<tspan x="0" dy="-0.6em">RGB</tspan><tspan x="0" dy="1.2em">next</tspan>
+</text>
 </g>
 <g transform="translate(84, 286)" class="key keypos-55">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-19" width="38" height="38" class="key"/>
+<text x="0" y="0" class="key tap">
+<tspan x="0" dy="-0.6em">RGB</tspan><tspan x="0" dy="1.2em">toggle</tspan>
+</text>
 </g>
 <g transform="translate(140, 263)" class="key keypos-56">
 <rect rx="6" ry="6" x="-25" y="-25" width="50" height="50" class="key side"/>
