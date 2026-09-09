@@ -159,6 +159,7 @@ static void perform_system_action(void) {
             } else {
                 keyrecord_t make_record = {.event.pressed = true};
 
+                clear_mods();
                 process_quantum(QK_MAKE, &make_record);
             }
             break;
