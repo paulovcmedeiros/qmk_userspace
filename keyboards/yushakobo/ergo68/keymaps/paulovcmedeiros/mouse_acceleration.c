@@ -30,6 +30,10 @@ static mouse_double_tap_state_t mouse_down_double_tap;
 static mouse_double_tap_state_t mouse_left_double_tap;
 static mouse_double_tap_state_t mouse_right_double_tap;
 
+static bool mouse_acceleration_active(void) {
+    return mouse_up_double_tap.accelerated || mouse_down_double_tap.accelerated || mouse_left_double_tap.accelerated || mouse_right_double_tap.accelerated;
+}
+
 /** Accelerate mouse movement in any direction while a second tap is held. */
 void process_fast_mouse_double_tap(uint16_t keycode, keyrecord_t *record) {
     mouse_double_tap_state_t *state;
@@ -77,7 +81,9 @@ void process_fast_mouse_double_tap(uint16_t keycode, keyrecord_t *record) {
 
     if (state->accelerated) {
         state->accelerated = false;
-        unregister_code16(MS_ACL2);
+        if (!mouse_acceleration_active()) {
+            unregister_code16(MS_ACL2);
+        }
         return;
     }
 
