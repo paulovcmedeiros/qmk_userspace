@@ -202,6 +202,8 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
 
         if (keycode == punctuation->custom_keycode) {
             if (record->event.pressed) {
+                // Custom keycodes stop before QMK's Auto Shift handler, so resolve any prior key first.
+                process_auto_shift(keycode, record);
                 tap_code(punctuation->tap_keycode);
                 punctuation->pending = true;
                 punctuation->timer   = timer_read();
