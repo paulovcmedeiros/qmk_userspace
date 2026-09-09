@@ -61,6 +61,11 @@ static bool key_positions_match(keypos_t first, keypos_t second) {
     return first.row == second.row && first.col == second.col;
 }
 
+/** Resolve pending Auto Shift input before consuming a custom keypress. */
+static void resolve_pending_auto_shift(uint16_t keycode, keyrecord_t *record) {
+    process_auto_shift(keycode, record);
+}
+
 /** Return the closer paired with a Symbols-layer opener. */
 static uint16_t matching_bracket_closer(uint16_t keycode) {
     switch (keycode) {
@@ -208,8 +213,7 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
 
         if (keycode == punctuation->custom_keycode) {
             if (record->event.pressed) {
-                // Custom keycodes stop before QMK's Auto Shift handler, so resolve any prior key first.
-                process_auto_shift(keycode, record);
+                resolve_pending_auto_shift(keycode, record);
                 tap_code(punctuation->tap_keycode);
                 punctuation->pending = true;
                 punctuation->timer   = timer_read();
@@ -223,18 +227,21 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case PYTHON_SHEBANG:
             if (record->event.pressed) {
+                resolve_pending_auto_shift(keycode, record);
                 SEND_STRING("#!/usr/bin/env python3\n");
             }
             return false;
 
         case BASH_SHEBANG:
             if (record->event.pressed) {
+                resolve_pending_auto_shift(keycode, record);
                 SEND_STRING("#!/usr/bin/env bash\n");
             }
             return false;
 
         case HOME_SLASH:
             if (record->event.pressed) {
+                resolve_pending_auto_shift(keycode, record);
                 home_slash.pressed   = true;
                 home_slash.hold_sent = false;
                 home_slash.timer     = timer_read();
@@ -248,6 +255,7 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
 
         case SP_MINS:
             if (record->event.pressed) {
+                resolve_pending_auto_shift(keycode, record);
                 space_minus.pressed   = true;
                 space_minus.hold_sent = false;
                 space_minus.timer     = timer_read();
