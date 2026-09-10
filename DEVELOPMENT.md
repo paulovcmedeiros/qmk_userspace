@@ -58,19 +58,19 @@ Firmware sources are in
 | File | Edit for |
 | --- | --- |
 | `keymap.c`, `keymap.h` | Layout, combos, indicators, hooks, and custom keycodes |
-| `typing_macros.c`, `mouse_acceleration.c`, `key_lock.c`, `system_actions.c`, `mode_indicators.c` | Custom behaviors |
+| `typing_macros.c`, `mouse_acceleration.c`, `key_lock.c`, `screen_lock.c`, `system_actions.c`, `mode_indicators.c`, `auto_shift_toggle.c` | Custom behaviors |
 | `config.h`, `rules.mk` | QMK settings and source registration |
-| `keymap-documentation.json` | Diagram layer names, combo labels, and notes |
+| `keymap-documentation.json` | Diagram layer names and the Enter combo label |
 | [keymap_drawer_config.yaml](keymap_drawer_config.yaml) (repo root) | Diagram parsing and styling |
 
 Do not edit generated `keymap.svg` or `keymap-combos.yaml` directly.
 
 Keep layout and combo definitions in `keymap.c` for the preview parser.
-Preserve hook ordering: mouse acceleration, typing macros, system actions,
-then modified-Space handling; stop when a handler consumes the event. The scan
-hook resolves typing timers before system-action timers.
+Preserve hook ordering: mouse acceleration, typing macros, screen lock, system
+actions, then modified-Space handling; stop when a handler consumes the event.
+The scan hook resolves typing timers before system-action timers.
 
-When behavior changes, update the README, diagram labels, and documentation
-notes, then run `./watch-ergo68-keymap.py --once` and commit the SVG. Keep the
+When behavior changes, update the README and diagram metadata, then run
+`./watch-ergo68-keymap.py --once` and commit the SVG. Keep the
 `layers` mapping in `keymap-documentation.json` in `enum layer_names` order.
 The preview does not validate firmware behavior.
