@@ -16,6 +16,7 @@
 
 #include "keymap.h"
 
+#include "keymap_introspection.h"
 #include "transactions.h"
 
 #define MODE_INDICATOR_SYNC_RETRY_TERM 50
@@ -27,6 +28,7 @@ enum mode_indicator_flags {
     MODE_INDICATOR_CAPS_WORD  = 1 << 1,
     MODE_INDICATOR_KEY_LOCK   = 1 << 2,
     MODE_INDICATOR_READY      = 1 << 3,
+    MODE_INDICATOR_LAYER_LOCK = 1 << 4,
 };
 
 typedef struct {
@@ -52,6 +54,9 @@ static uint8_t get_active_modes(void) {
     }
     if (thumb_auto_shift_toggle_ready()) {
         active_modes |= MODE_INDICATOR_READY;
+    }
+    if (is_layer_locked(get_highest_layer(layer_state))) {
+        active_modes |= MODE_INDICATOR_LAYER_LOCK;
     }
 
     return active_modes;
@@ -100,12 +105,25 @@ static bool is_shift_keycode(uint16_t keycode) {
     return IS_QK_MOD_TAP(keycode) && (QK_MOD_TAP_GET_MODS(keycode) & MOD_LSFT);
 }
 
-static bool mode_is_active_for_key(uint16_t keycode, keypos_t key, uint8_t active_modes) {
+static bool is_layer_lock_key(keypos_t key, uint8_t base_layer) {
+    for (uint8_t layer = base_layer + 1; layer < keymap_layer_count(); layer++) {
+        if (keymap_key_to_keycode(layer, key) == QK_LLCK) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool mode_is_active_for_key(uint16_t keycode, keypos_t key, uint8_t base_layer, uint8_t active_modes) {
     if (is_thumb_auto_shift_toggle_key(key) && (active_modes & MODE_INDICATOR_AUTO_SHIFT)) {
         return true;
     }
     if (keycode == QK_LOCK) {
         return active_modes & MODE_INDICATOR_KEY_LOCK;
+    }
+    if ((active_modes & MODE_INDICATOR_LAYER_LOCK) && is_layer_lock_key(key, base_layer)) {
+        return true;
     }
 
     return is_shift_keycode(keycode) && (active_modes & MODE_INDICATOR_CAPS_WORD);
@@ -127,7 +145,7 @@ void mode_indicators_render(uint8_t base_layer, uint8_t led_min, uint8_t led_max
 
                 if ((active_modes & MODE_INDICATOR_READY) && is_thumb_auto_shift_toggle_key(key)) {
                     rgb_matrix_set_color(led, MODE_INDICATOR_READY_COLOR);
-                } else if (mode_is_active_for_key(keymap_key_to_keycode(base_layer, key), key, active_modes)) {
+                } else if (mode_is_active_for_key(keymap_key_to_keycode(base_layer, key), key, base_layer, active_modes)) {
                     rgb_matrix_set_color(led, MODE_INDICATOR_COLOR);
                 }
             }

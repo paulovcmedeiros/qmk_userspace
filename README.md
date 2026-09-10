@@ -39,6 +39,8 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
   toggle.
 - **Key Lock:** Locks the next basic key until that key or Key Lock is pressed
   again.
+- **Layer Lock:** The far-right thumb key on Mouse, Numpad, and Symbols locks
+  the active layer until that key is pressed again.
 - **Screen Lock:** Sends `Control+Command+Q` on macOS and `Super+L` on Windows.
   On Linux it sends GNOME's `Super+L`, followed by KDE's `Control+Alt+L`; other
   or customized desktops may require remapping one of those shortcuts. QMK
@@ -54,8 +56,9 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
 - **Caps Word:** Both Shifts activate Caps Word.
 - **Mode indicators:** Active typing modes are shown in magenta: the left thumb
   Shift while Auto Shift is enabled, all Shift keys during Caps Word, and the
-  Key Lock key while it is waiting for or holding a key. The left thumb Shift
-  turns yellow when releasing it will toggle Auto Shift.
+  Key Lock key while it is waiting for or holding a key. The Layer Lock key is
+  also magenta while its layer is locked. The left thumb Shift turns yellow
+  when releasing it will toggle Auto Shift.
 - **Unassigned keys:** On each layer, LEDs under unassigned keys are turned off.
   Transparent keys, which inherit their action from a lower layer, remain
   illuminated.
