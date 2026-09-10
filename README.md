@@ -20,40 +20,52 @@ Plain US supports the ASCII letters and symbols but lacks EurKEY's AltGr
 behavior. Other host layouts require reviewing printable keycodes and
 `SEND_STRING` macros.
 
-## Custom behavior
+## Features
 
-- The thumb Space keys are dual-role. Tapping one while Shift or Alt is held
-  sends Backspace instead.
-- The Mouse and Symbols thumb keys form Enter. This combo works only on Base,
-  must be tapped within its 30 ms chord window, and is disabled while Shift or
-  Alt is held.
-- Holding a mouse direction after a double tap within 100 ms uses maximum
-  pointer acceleration.
-- The custom punctuation keys append Space when held for 150 ms. The custom
-  slash and minus keys select `/` versus `~/`, and `-` versus ` -`, by tap or
-  hold.
-- Typing `{}`, `[]`, or `()` within 300 ms moves the cursor between the pair.
-  An intervening keypress cancels the behavior.
-- Both Shifts activate Caps Word. Holding the left thumb Shift alone for one
-  second on Base toggles Auto Shift when released; another keyboard keypress
-  cancels the toggle. Key Lock locks the next basic key until that key or Key
-  Lock is pressed again.
-- Screen Lock sends `Control+Command+Q` on macOS and `Super+L` on Windows. On
-  Linux it sends GNOME's `Super+L`, followed by KDE's `Control+Alt+L`; other or
-  customized desktops may require remapping one of those shortcuts. QMK
+Some behavior is largely portable between QMK keymaps, while another part depends,
+naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
+
+### Mostly portable behavior
+
+- **Mouse acceleration:** Holding a mouse direction after a double tap within
+  100 ms uses maximum pointer acceleration.
+- **Punctuation macros:** The custom punctuation keys append Space when held
+  for 150 ms. The custom slash and minus keys select `/` versus `~/`, and `-`
+  versus ` -`, by tap or hold.
+- **Bracket pairs:** Typing `{}`, `[]`, or `()` within 300 ms moves the cursor
+  between the pair. An intervening keypress cancels the behavior.
+- **Auto Shift toggle:** Holding the left thumb Shift alone for one second on
+  Base toggles Auto Shift when released; another keyboard keypress cancels the
+  toggle.
+- **Key Lock:** Locks the next basic key until that key or Key Lock is pressed
+  again.
+- **Screen Lock:** Sends `Control+Command+Q` on macOS and `Super+L` on Windows.
+  On Linux it sends GNOME's `Super+L`, followed by KDE's `Control+Alt+L`; other
+  or customized desktops may require remapping one of those shortcuts. QMK
   host-OS detection is best-effort; an uncertain result uses `Super+L`.
-- Active typing modes are shown in magenta: the left thumb Shift while Auto
-  Shift is enabled, all Shift keys during Caps Word, and the Key Lock key while
-  it is waiting for or holding a key. The left thumb Shift turns yellow when
-  releasing it will toggle Auto Shift.
-- On each layer, LEDs under unassigned keys are turned off. Transparent keys,
-  which inherit their action from a lower layer, remain illuminated.
-- System keys require a two-second hold. Make types and submits the QMK compile
-  command, Shift+Make does the same for flash, Ctrl+Shift+Make enters the
-  bootloader, EEPROM Clear erases persisted QMK settings and restarts the
-  keyboard, and Build Dates types both halves' compilation timestamps. While a
-  system key is arming, the other LEDs turn off and the Numpad indicator blinks
-  red; after confirmation, it turns yellow briefly before the action runs.
+
+### Ergo68 keymap integration
+
+- **Modified Space:** The thumb Space keys are dual-role. Tapping one while
+  Shift or Alt is held sends Backspace instead.
+- **Enter combo:** The Mouse and Symbols thumb keys form Enter. This combo works
+  only on Base, must be tapped within its 30 ms chord window, and is disabled
+  while Shift or Alt is held.
+- **Caps Word:** Both Shifts activate Caps Word.
+- **Mode indicators:** Active typing modes are shown in magenta: the left thumb
+  Shift while Auto Shift is enabled, all Shift keys during Caps Word, and the
+  Key Lock key while it is waiting for or holding a key. The left thumb Shift
+  turns yellow when releasing it will toggle Auto Shift.
+- **Unassigned keys:** On each layer, LEDs under unassigned keys are turned off.
+  Transparent keys, which inherit their action from a lower layer, remain
+  illuminated.
+- **System actions:** System keys require a two-second hold. Make types and
+  submits the QMK compile command, Shift+Make does the same for flash,
+  Ctrl+Shift+Make enters the bootloader, EEPROM Clear erases persisted QMK
+  settings and restarts the keyboard, and Build Dates types both halves'
+  compilation timestamps. While a system key is arming, the other LEDs turn
+  off and the Numpad indicator blinks red; after confirmation, it turns yellow
+  briefly before the action runs.
 
 > **Caution:** Make and Shift+Make type a command followed by Enter. Use them
 > only while a trusted terminal is focused.
