@@ -19,7 +19,7 @@
 #include "transactions.h"
 
 #define MODE_INDICATOR_SYNC_RETRY_TERM 50
-#define MODE_INDICATOR_COLOR 128, 0, 128
+#define MODE_INDICATOR_COLOR 32, 0, 32
 
 enum mode_indicator_flags {
     MODE_INDICATOR_AUTO_SHIFT = 1 << 0,
