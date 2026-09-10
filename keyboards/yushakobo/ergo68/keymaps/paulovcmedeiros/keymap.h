@@ -38,9 +38,12 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record);
 bool process_screen_lock(uint16_t keycode, keyrecord_t *record);
 bool process_system_actions(uint16_t keycode, keyrecord_t *record);
 bool process_modified_space(uint16_t keycode, keyrecord_t *record);
+void process_thumb_auto_shift_toggle(uint16_t keycode, keyrecord_t *record, uint8_t base_layer);
 
 bool pre_process_key_lock(uint16_t keycode, keyrecord_t *record);
 bool key_lock_is_active(void);
+bool is_thumb_auto_shift_toggle_key(keypos_t key);
+bool thumb_auto_shift_toggle_ready(void);
 void typing_macros_task(void);
 void system_actions_task(void);
 void system_actions_init(void);
