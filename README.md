@@ -96,9 +96,22 @@ Shift+Make first looks for
 `$(qmk userspace-path)/yushakobo_ergo68_paulovcmedeiros.hex`; if it is absent, it
 falls back to the build-and-flash command above.
 
+## Live keymap preview
+
+[watch-ergo68-keymap.py](watch-ergo68-keymap.py) monitors the keymap source and
+diagram configuration, regenerates the SVG, and refreshes it in a browser:
+
+```sh
+./watch-ergo68-keymap.py
+```
+
+Although configured for this Ergo68 keymap, its QMK-to-keymap-drawer pipeline
+can be adapted to other QMK keymaps. See the
+[development guide](DEVELOPMENT.md#live-keymap-preview) for dependencies,
+options, and editing instructions.
+
 ## Customizing the keymap
 
 Edit `keymap.c`, then compile and flash. VIA/Remap live remapping is disabled.
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for setup, the live keymap preview, and
-editing instructions.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for the complete development setup.
