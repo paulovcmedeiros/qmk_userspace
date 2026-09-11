@@ -117,9 +117,9 @@ parse_config:
         QK_LOCK: Key lock
         QK_LLCK: Layer lock
         AS_TOGG: Auto Shift
-        UG_TOGG: RGB toggle
-        UG_PREV: RGB previous
-        UG_NEXT: RGB next
+        RM_TOGG: RGB toggle
+        RM_PREV: RGB previous
+        RM_NEXT: RGB next
         KC_ENT: Enter
         KC_ENTER: Enter
         KC_TAB: Tab
