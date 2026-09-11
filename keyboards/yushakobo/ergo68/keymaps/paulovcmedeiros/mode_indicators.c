@@ -26,9 +26,8 @@
 enum mode_indicator_flags {
     MODE_INDICATOR_AUTO_SHIFT = 1 << 0,
     MODE_INDICATOR_CAPS_WORD  = 1 << 1,
-    MODE_INDICATOR_KEY_LOCK   = 1 << 2,
-    MODE_INDICATOR_READY      = 1 << 3,
-    MODE_INDICATOR_LAYER_LOCK = 1 << 4,
+    MODE_INDICATOR_READY      = 1 << 2,
+    MODE_INDICATOR_LAYER_LOCK = 1 << 3,
 };
 
 typedef struct {
@@ -48,9 +47,6 @@ static uint8_t get_active_modes(void) {
     }
     if (is_caps_word_on()) {
         active_modes |= MODE_INDICATOR_CAPS_WORD;
-    }
-    if (key_lock_is_active()) {
-        active_modes |= MODE_INDICATOR_KEY_LOCK;
     }
     if (thumb_auto_shift_toggle_ready()) {
         active_modes |= MODE_INDICATOR_READY;
@@ -118,9 +114,6 @@ static bool is_layer_lock_key(keypos_t key, uint8_t base_layer) {
 static bool mode_is_active_for_key(uint16_t keycode, keypos_t key, uint8_t base_layer, uint8_t active_modes) {
     if (is_thumb_auto_shift_toggle_key(key) && (active_modes & MODE_INDICATOR_AUTO_SHIFT)) {
         return true;
-    }
-    if (keycode == QK_LOCK) {
-        return active_modes & MODE_INDICATOR_KEY_LOCK;
     }
     if ((active_modes & MODE_INDICATOR_LAYER_LOCK) && is_layer_lock_key(key, base_layer)) {
         return true;

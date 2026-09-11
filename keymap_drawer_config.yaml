@@ -114,7 +114,6 @@ parse_config:
             t: \
             h: LCTL
             s: "|"
-        QK_LOCK: Key lock
         QK_LLCK: Layer lock
         AS_TOGG: Auto Shift
         RM_TOGG: RGB toggle

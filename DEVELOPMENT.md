@@ -58,7 +58,7 @@ Firmware sources are in
 | File | Edit for |
 | --- | --- |
 | `keymap.c`, `keymap.h` | Layout, combos, indicators, hooks, and custom keycodes |
-| `typing_macros.c`, `mouse_acceleration.c`, `key_lock.c`, `screen_lock.c`, `system_actions.c`, `mode_indicators.c`, `auto_shift_toggle.c` | Custom behaviors |
+| `typing_macros.c`, `mouse_acceleration.c`, `screen_lock.c`, `system_actions.c`, `mode_indicators.c`, `auto_shift_toggle.c` | Custom behaviors |
 | `config.h`, `rules.mk` | QMK settings and source registration |
 | `keymap-documentation.json` | Diagram layer names and the Enter combo label |
 | [keymap_drawer_config.yaml](keymap_drawer_config.yaml) (repo root) | Diagram parsing and styling |
