@@ -72,11 +72,17 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
 
 ## Firmware downloads
 
-Download `yushakobo_ergo68_paulovcmedeiros.hex` from the
-[latest firmware release](https://github.com/paulovcmedeiros/qmk_userspace/releases/tag/latest)
-and follow QMK's [flashing guide](https://docs.qmk.fm/newbs_flashing).
+Download one of these files from the
+[latest firmware release](https://github.com/paulovcmedeiros/qmk_userspace/releases/tag/latest):
 
-The `latest` release contains a successful build from `main`, without hardware
+- `yushakobo_ergo68_paulovcmedeiros.hex`: regular firmware, with the layout
+  defined by `keymap.c`.
+- `yushakobo_ergo68_paulovcmedeiros_via.hex`: VIA-enabled firmware for live
+  remapping with VIA or Remap.
+
+Then follow QMK's [flashing guide](https://docs.qmk.fm/newbs_flashing).
+
+The `latest` release contains successful builds from `main`, without hardware
 validation. Flash the same file to each half separately.
 
 ## Build and flash
@@ -109,6 +115,8 @@ options, and editing instructions.
 
 ## Customizing the keymap
 
-Edit `keymap.c`, then compile and flash. VIA/Remap live remapping is disabled.
+Edit `keymap.c`, then compile and flash. Local builds use the regular,
+non-VIA configuration by default; the latest release also provides the
+separately labeled VIA-enabled firmware.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the complete development setup.
