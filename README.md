@@ -52,10 +52,12 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
   only on Base, must be tapped within its 30 ms chord window, and is disabled
   while Shift or Alt is held.
 - **Caps Word:** Both Shifts activate Caps Word.
-- **Mode indicators:** Active typing modes are shown in magenta: the left thumb
-  Shift while Auto Shift is enabled, all Shift keys during Caps Word, and the
-  Layer Lock key while its layer is locked. The left thumb Shift turns yellow
-  when releasing it will toggle Auto Shift.
+- **Layer and mode indicators:** The Base layer selectors and each secondary
+  layer's Layer Lock key use the layer's color: blue for Mouse, orange for
+  Numpad, and green for Symbols. Active typing modes are shown in magenta: the
+  left thumb Shift while Auto Shift is enabled, all Shift keys during Caps Word,
+  and the Layer Lock key while its layer is locked. The left thumb Shift turns
+  yellow when releasing it will toggle Auto Shift.
 - **Unassigned keys:** On each layer, LEDs under unassigned keys are turned off.
   Transparent keys, which inherit their action from a lower layer, remain
   illuminated.

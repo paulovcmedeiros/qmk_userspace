@@ -165,16 +165,43 @@ static void set_lock_indicator(uint8_t led, bool active, uint8_t led_min, uint8_
     }
 }
 
-/** Turn off key LEDs that have no action on the active layer. */
-static void turn_off_unassigned_keys(uint8_t led_min, uint8_t led_max) {
+/** Color an LED according to the layer it represents. */
+static void set_layer_color(uint8_t led, uint8_t layer, uint8_t led_min, uint8_t led_max) {
+    if (led < led_min || led >= led_max) {
+        return;
+    }
+
+    switch (layer) {
+        case MOUSE:
+            rgb_matrix_set_color(led, 0, 0, 128);
+            break;
+        case NUMPAD:
+            rgb_matrix_set_color(led, 128, 40, 0);
+            break;
+        case SYMBOLS:
+            rgb_matrix_set_color(led, 0, 128, 0);
+            break;
+    }
+}
+
+/** Turn off unassigned keys and highlight the active layer controls. */
+static void render_key_indicators(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state);
 
     for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < MATRIX_COLS; col++) {
             uint8_t led = g_led_config.matrix_co[row][col];
 
-            if (led >= led_min && led < led_max && led != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col, row}) == KC_NO) {
-                rgb_matrix_set_color(led, RGB_OFF);
+            if (led >= led_min && led < led_max && led != NO_LED) {
+                uint16_t keycode = keymap_key_to_keycode(layer, (keypos_t){col, row});
+
+                if (keycode == KC_NO) {
+                    rgb_matrix_set_color(led, RGB_OFF);
+                } else if (layer == BASE && IS_QK_LAYER_TAP(keycode)) {
+                    set_layer_color(led, QK_LAYER_TAP_GET_LAYER(keycode), led_min, led_max);
+                } else if (layer != BASE && keycode == QK_LLCK) {
+                    set_layer_color(led, layer, led_min, led_max);
+                }
             }
         }
     }
@@ -185,7 +212,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         return false;
     }
 
-    turn_off_unassigned_keys(led_min, led_max);
+    render_key_indicators(led_min, led_max);
 
     led_t host_leds = host_keyboard_led_state();
 
@@ -197,13 +224,13 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // layer state
     switch (get_highest_layer(layer_state)) {
         case MOUSE:
-            RGB_MATRIX_INDICATOR_SET_COLOR(MOUSE_LAYER_LED, 0, 0, 128);
+            set_layer_color(MOUSE_LAYER_LED, MOUSE, led_min, led_max);
             break;
         case NUMPAD:
-            RGB_MATRIX_INDICATOR_SET_COLOR(NUMPAD_LAYER_LED, 128, 40, 0);
+            set_layer_color(NUMPAD_LAYER_LED, NUMPAD, led_min, led_max);
             break;
         case SYMBOLS:
-            RGB_MATRIX_INDICATOR_SET_COLOR(SYMBOLS_LAYER_LED, 0, 128, 0);
+            set_layer_color(SYMBOLS_LAYER_LED, SYMBOLS, led_min, led_max);
             break;
     }
     return false;
