@@ -169,9 +169,10 @@ parse_config:
         S(KC_MINS): _
         PYTHON_SHEBANG: "Python #!"
         BASH_SHEBANG: "Bash #!"
-        HOME_SLASH:
+        DOT_SLASH:
             t: /
-            h: ~/
+            h: ./
+        HOME_SLASH: "~/"
         SCREEN_LOCK: Screen lock
         SP_MINS:
             t: "-"

@@ -27,8 +27,8 @@ typedef struct {
     uint16_t timer;
 } tap_hold_state_t;
 
-// Tap sends keypad slash; hold or interruption sends "~/".
-static tap_hold_state_t home_slash;
+// Tap sends keypad slash; hold or interruption sends "./".
+static tap_hold_state_t dot_slash;
 
 // Tap sends minus; hold or interruption sends " -".
 static tap_hold_state_t space_minus;
@@ -131,10 +131,10 @@ static void tap_unmodified_left(void) {
     send_keyboard_report();
 }
 
-/** Send the hold action for HOME_SLASH and mark it as resolved. */
-static void send_home_slash_hold(void) {
-    SEND_STRING("~/");
-    home_slash.hold_sent = true;
+/** Send the hold action for DOT_SLASH and mark it as resolved. */
+static void send_dot_slash_hold(void) {
+    SEND_STRING("./");
+    dot_slash.hold_sent = true;
 }
 
 /** Send the hold action for SP_MINS and mark it as resolved. */
@@ -197,9 +197,9 @@ bool process_modified_space(uint16_t keycode, keyrecord_t *record) {
 bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
     process_bracket_pair(keycode, record);
 
-    // Resolve HOME_SLASH as a hold before processing an interrupting key.
-    if (record->event.pressed && home_slash.pressed && !home_slash.hold_sent && keycode != HOME_SLASH) {
-        send_home_slash_hold();
+    // Resolve DOT_SLASH as a hold before processing an interrupting key.
+    if (record->event.pressed && dot_slash.pressed && !dot_slash.hold_sent && keycode != DOT_SLASH) {
+        send_dot_slash_hold();
     }
 
     // Resolve SP_MINS as a hold before processing an interrupting key.
@@ -239,17 +239,24 @@ bool process_typing_macros(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        case DOT_SLASH:
+            if (record->event.pressed) {
+                resolve_pending_auto_shift(keycode, record);
+                dot_slash.pressed   = true;
+                dot_slash.hold_sent = false;
+                dot_slash.timer     = timer_read();
+            } else {
+                if (!dot_slash.hold_sent) {
+                    tap_code(KC_PSLS);
+                }
+                dot_slash.pressed = false;
+            }
+            return false;
+
         case HOME_SLASH:
             if (record->event.pressed) {
                 resolve_pending_auto_shift(keycode, record);
-                home_slash.pressed   = true;
-                home_slash.hold_sent = false;
-                home_slash.timer     = timer_read();
-            } else {
-                if (!home_slash.hold_sent) {
-                    tap_code(KC_PSLS);
-                }
-                home_slash.pressed = false;
+                SEND_STRING("~/");
             }
             return false;
 
@@ -286,8 +293,8 @@ void typing_macros_task(void) {
         }
     }
 
-    if (home_slash.pressed && !home_slash.hold_sent && timer_elapsed(home_slash.timer) >= TAPPING_TERM) {
-        send_home_slash_hold();
+    if (dot_slash.pressed && !dot_slash.hold_sent && timer_elapsed(dot_slash.timer) >= TAPPING_TERM) {
+        send_dot_slash_hold();
     }
 
     if (space_minus.pressed && !space_minus.hold_sent && timer_elapsed(space_minus.timer) >= TAPPING_TERM) {

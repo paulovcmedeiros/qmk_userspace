@@ -30,8 +30,8 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
 - **Mouse acceleration:** Holding a mouse direction after a double tap within
   100 ms uses maximum pointer acceleration.
 - **Punctuation macros:** The custom punctuation keys append Space when held
-  for 150 ms. The custom slash and minus keys select `/` versus `~/`, and `-`
-  versus ` -`, by tap or hold.
+  for 150 ms. The custom slash and minus keys select `/` versus `./`, and `-`
+  versus ` -`, by tap or hold; a neighboring thumb key types `~/` immediately.
 - **Bracket pairs:** Typing `{}`, `[]`, or `()` within 300 ms moves the cursor
   between the pair. An intervening keypress cancels the behavior.
 - **Auto Shift toggle:** Holding the left thumb Shift alone for one second on

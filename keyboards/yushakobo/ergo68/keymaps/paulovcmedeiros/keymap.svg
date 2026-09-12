@@ -1505,11 +1505,12 @@ a[href="#Symbols"] text.layer-activator {
 <rect rx="6" ry="6" x="-25" y="-53" width="50" height="106" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-47" width="38" height="94" class="key"/>
 <text x="0" y="0" class="key tap">/</text>
-<text x="0" y="43" class="key hold">~/</text>
+<text x="0" y="43" class="key hold">./</text>
 </g>
 <g transform="translate(392, 314)" class="key keypos-60">
 <rect rx="6" ry="6" x="-25" y="-53" width="50" height="106" class="key side"/>
 <rect rx="4" ry="4" x="-19" y="-47" width="38" height="94" class="key"/>
+<text x="0" y="0" class="key tap">~/</text>
 </g>
 <g transform="translate(504, 314)" class="key keypos-61">
 <rect rx="6" ry="6" x="-25" y="-53" width="50" height="106" class="key side"/>

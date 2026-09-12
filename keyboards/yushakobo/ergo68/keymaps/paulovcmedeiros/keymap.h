@@ -30,6 +30,7 @@ enum custom_keycodes {
     SCLN_SP,
     DOT_SP,
     SP_MINS,
+    DOT_SLASH,
 };
 
 // Called in order by process_record_user; false consumes the event.
