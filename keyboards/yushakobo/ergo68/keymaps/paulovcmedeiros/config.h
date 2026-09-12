@@ -28,6 +28,9 @@
 /* Synchronize custom data and indicator state between halves. */
 #define SPLIT_TRANSACTION_IDS_USER BUILD_DATE_SYNC, SYSTEM_ACTION_FEEDBACK_SYNC, MODE_INDICATOR_SYNC
 
+/* Turn off RGB LEDs after a period of keyboard inactivity. */
+#define RGB_MATRIX_TIMEOUT 300000 // 5 minutes
+
 /* Keep Solid Color and Alphas/Mods; omit unused RGB animations. */
 #define RGB_MATRIX_DISABLE_SHARED_KEYCODES
 #undef ENABLE_RGB_MATRIX_BREATHING
