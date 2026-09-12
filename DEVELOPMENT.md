@@ -6,8 +6,9 @@ See the [README](README.md) for keyboard behavior and build/flash commands.
 
 Follow QMK's [environment setup](https://docs.qmk.fm/newbs_getting_started)
 and [External Userspace guide](https://docs.qmk.fm/newbs_external_userspace),
-using this repository as your userspace. The Ergo68 target is already registered
-in [qmk.json](qmk.json).
+using this repository as your userspace. Both the regular and optional
+VIA-enabled Ergo68 targets are registered in [qmk.json](qmk.json); see the
+[firmware variants](README.md#firmware-downloads) for their differences.
 
 For the preview, install [uv](https://docs.astral.sh/uv/getting-started/installation/)
 and run `uv tool install keymap-drawer`. See uv's
@@ -32,6 +33,18 @@ QMK `master`; local builds use your checkout. Firmware changes pushed to `main`
 or `develop` build automatically. Other branches can be run manually under
 [Actions](https://github.com/paulovcmedeiros/qmk_userspace/actions). Successful
 builds on `main` replace `latest`.
+
+CI builds both targets in `qmk.json`. The regular target uses `VIA_ENABLE = no`
+from `rules.mk`; the second overrides it with `VIA_ENABLE=yes` and a distinct
+`TARGET` filename. To build that variant locally:
+
+```sh
+qmk compile -kb yushakobo/ergo68 -km paulovcmedeiros -e VIA_ENABLE=yes -e TARGET=yushakobo_ergo68_paulovcmedeiros_via
+```
+
+The regular layout is controlled by source, but builds are not guaranteed to be
+bit-for-bit reproducible: CI follows upstream `master`, toolchains may differ,
+and the firmware embeds compilation timestamps.
 
 Keep a `.hex` tested on both halves for rollback; `latest` is replaced by
 subsequent builds.
@@ -66,8 +79,10 @@ Firmware sources are in
 Do not edit generated `keymap.svg` or `keymap-combos.yaml` directly.
 
 Keep layout and combo definitions in `keymap.c` for the preview parser.
-Preserve hook ordering: mouse acceleration, typing macros, screen lock, system
-actions, then modified-Space handling; stop when a handler consumes the event.
+The thumb Auto Shift toggle runs in `pre_process_record_user()`.
+Preserve `process_record_user()` ordering: mouse acceleration, typing macros,
+screen lock, system actions, then modified-Space handling; stop when a handler
+consumes the event.
 The scan hook resolves typing timers before system-action timers.
 
 When behavior changes, update the README and diagram metadata, then run

@@ -22,8 +22,8 @@ behavior. Other host layouts require reviewing printable keycodes and
 
 ## Features
 
-Some behavior is largely portable between QMK keymaps, while another part depends,
-naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
+Some behavior is largely portable across QMK keymaps, while other features depend
+on this layout, the split hardware, or the Ergo68's RGB matrix.
 
 ### Mostly portable behavior
 
@@ -49,7 +49,7 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
 - **Modified Space:** The thumb Space keys are dual-role. Tapping one while
   Shift or Alt is held sends Backspace instead.
 - **Enter combo:** The Mouse and Symbols thumb keys form Enter. This combo works
-  only on Base, must be tapped within its 30 ms chord window, and is disabled
+  only on Base, must be tapped within its 40 ms chord window, and is disabled
   while Shift or Alt is held.
 - **Caps Word:** Both Shifts activate Caps Word.
 - **Layer and mode indicators:** The Base layer selectors and each secondary
@@ -77,10 +77,18 @@ naturally, on this layout, the split hardware, or the Ergo68's RGB matrix.
 Download one of these files from the
 [latest firmware release](https://github.com/paulovcmedeiros/qmk_userspace/releases/tag/latest):
 
-- `yushakobo_ergo68_paulovcmedeiros.hex`: regular firmware, with the layout
-  defined by `keymap.c`.
-- `yushakobo_ergo68_paulovcmedeiros_via.hex`: VIA-enabled firmware for live
-  remapping with VIA or Remap.
+- `yushakobo_ergo68_paulovcmedeiros.hex`: regular firmware, the canonical
+  version for this keymap. Its layout is defined by `keymap.c`, with live
+  remapping disabled.
+- `yushakobo_ergo68_paulovcmedeiros_via.hex`: optional
+  [VIA](https://www.caniusevia.com/)-enabled firmware for live remapping with
+  VIA or [Remap](https://remap-keys.app/).
+
+The VIA variant uses the same source layout as its initial defaults, but stores
+remappings in EEPROM. These can survive flashing and override later layout
+changes in `keymap.c`; they do not update this repository or its diagram.
+See [customizing the keymap](#customizing-the-keymap) before switching variants
+or restoring the source layout.
 
 Then follow QMK's [flashing guide](https://docs.qmk.fm/newbs_flashing).
 
@@ -118,7 +126,14 @@ options, and editing instructions.
 ## Customizing the keymap
 
 Edit `keymap.c`, then compile and flash. Local builds use the regular,
-non-VIA configuration by default; the latest release also provides the
-separately labeled VIA-enabled firmware.
+non-VIA configuration by default, so the flashed layout follows the source.
+
+With the VIA variant, live remapping changes key assignments; changing custom C
+behavior still requires rebuilding and flashing. To restore the compiled layout,
+back up any remappings you want to keep, then reset EEPROM as described in
+[VIA's QMK guide](https://www.caniusevia.com/docs/configuring_qmk/#bootmagic).
+This also resets other persisted settings. Flashing regular firmware makes its
+source layout active, but does not guarantee that old VIA mappings are erased
+if you later switch back.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the complete development setup.
