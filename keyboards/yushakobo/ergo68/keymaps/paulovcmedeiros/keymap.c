@@ -41,7 +41,8 @@ enum combo_events {
     THUMBS_ENTER,
 };
 
-#define THUMBS_ENTER_COMBO_TERM 30
+/* Set the thumb Enter combo’s recognition window independently. */
+#define THUMBS_ENTER_COMBO_TERM 40
 
 // Physical RGB matrix indexes reserved for status indicators.
 enum indicator_leds {

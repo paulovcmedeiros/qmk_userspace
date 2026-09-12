@@ -19,7 +19,7 @@
 /* Tap-hold behavior. */
 #define TAPPING_TERM 150
 
-/* Require a deliberate, brief chord for the thumb Enter combo. */
+/* Configure the default combo term and enable per-combo policies. */
 #define COMBO_TERM 40
 #define COMBO_TERM_PER_COMBO
 #define COMBO_MUST_TAP_PER_COMBO
