@@ -195,3 +195,6 @@ parse_config:
         HOLD_SHOW_VERSION:
             t: Build dates
             h: hold 2s
+        HOLD_BOOT:
+            t: Boot loader
+            h: hold 2s

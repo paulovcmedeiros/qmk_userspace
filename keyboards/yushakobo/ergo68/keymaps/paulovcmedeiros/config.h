@@ -17,7 +17,10 @@
 #define MOUSEKEY_MOVE_DELTA 10
 
 /* Tap-hold behavior. */
-#define TAPPING_TERM 150
+#define TAPPING_TERM 130
+
+/* Hold duration before Auto Shift emits a shifted character. */
+#define AUTO_SHIFT_TIMEOUT 150
 
 /* Configure the default combo term and enable per-combo policies. */
 #define COMBO_TERM 40

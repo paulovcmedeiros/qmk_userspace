@@ -31,6 +31,7 @@ enum custom_keycodes {
     DOT_SP,
     SP_MINS,
     DOT_SLASH,
+    HOLD_BOOT,
 };
 
 // Called in order by process_record_user; false consumes the event.

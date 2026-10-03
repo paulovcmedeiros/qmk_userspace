@@ -30,6 +30,7 @@ typedef enum {
     SYSTEM_ACTION_MAKE,
     SYSTEM_ACTION_EE_CLEAR,
     SYSTEM_ACTION_SHOW_VERSION,
+    SYSTEM_ACTION_BOOT,
 } system_action_t;
 
 typedef enum {
@@ -173,6 +174,10 @@ static void perform_system_action(void) {
             show_version_pending = true;
             break;
 
+        case SYSTEM_ACTION_BOOT:
+            reset_keyboard();
+            break;
+
         case SYSTEM_ACTION_NONE:
             break;
     }
@@ -193,6 +198,10 @@ bool process_system_actions(uint16_t keycode, keyrecord_t *record) {
 
         case HOLD_SHOW_VERSION:
             process_system_action(SYSTEM_ACTION_SHOW_VERSION, record);
+            return false;
+
+        case HOLD_BOOT:
+            process_system_action(SYSTEM_ACTION_BOOT, record);
             return false;
     }
 

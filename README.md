@@ -22,35 +22,25 @@ behavior. Other host layouts require reviewing printable keycodes and
 
 ## Features
 
-Some behavior is largely portable across QMK keymaps, while other features depend
-on this layout, the split hardware, or the Ergo68's RGB matrix.
-
-### Mostly portable behavior
-
-- **Mouse acceleration:** Holding a mouse direction after a double tap within
-  100 ms uses maximum pointer acceleration.
-- **Punctuation macros:** The custom punctuation keys append Space when held
-  for 150 ms. The custom slash and minus keys select `/` versus `./`, and `-`
-  versus ` -`, by tap or hold; a neighboring thumb key types `~/` immediately.
-- **Bracket pairs:** Typing `{}`, `[]`, or `()` within 300 ms moves the cursor
+- **Mouse acceleration:** Double-tap and hold a mouse direction for maximum
+  pointer acceleration.
+- **Punctuation macros:** Hold a custom punctuation key to append Space.
+- **Bracket pairs:** Typing `{}`, `[]`, or `()` in quick succession moves the cursor
   between the pair. An intervening keypress cancels the behavior.
-- **Auto Shift toggle:** Holding the left thumb Shift alone for one second on
+- **Auto Shift:** Hold a supported key to emit its shifted character.
+- **Auto Shift toggle:** Holding the left thumb Shift alone on
   Base toggles Auto Shift when released; another keyboard keypress cancels the
   toggle.
-- **Layer Lock:** The far-right thumb key on Mouse, Numpad, and Symbols locks
-  the active layer until that key is pressed again.
+- **Layer Lock:** Locks the active layer until pressed again.
 - **Screen Lock:** Sends `Control+Command+Q` on macOS and `Super+L` on Windows.
   On Linux it sends GNOME's `Super+L`, followed by KDE's `Control+Alt+L`; other
   or customized desktops may require remapping one of those shortcuts. QMK
   host-OS detection is best-effort; an uncertain result uses `Super+L`.
 
-### Ergo68 keymap integration
-
 - **Modified Space:** The thumb Space keys are dual-role. Tapping one while
   Shift or Alt is held sends Backspace instead.
-- **Enter combo:** The Mouse and Symbols thumb keys form Enter. This combo works
-  only on Base, must be tapped within its 40 ms chord window, and is disabled
-  while Shift or Alt is held.
+- **Enter combo:** Works only on Base, requires a tap, and is disabled while
+  Shift or Alt is held.
 - **Caps Word:** Both Shifts activate Caps Word.
 - **Layer and mode indicators:** The Base layer selectors and each secondary
   layer's Layer Lock key use the layer's color: blue for Mouse, orange for
@@ -61,10 +51,11 @@ on this layout, the split hardware, or the Ergo68's RGB matrix.
 - **Unassigned keys:** On each layer, LEDs under unassigned keys are turned off.
   Transparent keys, which inherit their action from a lower layer, remain
   illuminated.
-- **System actions:** System keys require a two-second hold. Make types and
+- **System actions:** System keys require a deliberate hold. Make types and
   submits the QMK compile command, Shift+Make does the same for flash,
-  Ctrl+Shift+Make enters the bootloader, EEPROM Clear erases persisted QMK
-  settings and restarts the keyboard, and Build Dates types both halves'
+  Ctrl+Shift+Make or the dedicated Bootloader key enters the bootloader,
+  EEPROM Clear erases persisted QMK settings and restarts the keyboard,
+  and Build Dates types both halves'
   compilation timestamps. While a system key is arming, the other LEDs turn
   off and the Numpad indicator blinks red; after confirmation, it turns yellow
   briefly before the action runs.
