@@ -3,7 +3,8 @@
     "BASE": "Base",
     "MOUSE": "Mouse",
     "NUMPAD": "Numpad",
-    "SYMBOLS": "Symbols"
+    "SYMBOLS": "Symbols",
+    "FUNCTION": "Fn"
   },
   "combo_labels": {
     "KC_ENT": "Enter"

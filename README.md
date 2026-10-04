@@ -22,6 +22,10 @@ behavior. Other host layouts require reviewing printable keycodes and
 
 ## Features
 
+- **Function keys:** Hold Fn, immediately to the right of the Base layer's
+  left Ctrl, for F1–F10 on the number row. Other keys inherit their lower-layer
+  behavior, including modifiers for F-key shortcuts. Release Fn to leave the
+  Fn layer.
 - **Mouse acceleration:** Double-tap and hold a mouse direction for maximum
   pointer acceleration.
 - **Punctuation macros:** Hold a custom punctuation key to append Space.
@@ -42,7 +46,7 @@ behavior. Other host layouts require reviewing printable keycodes and
 - **Enter combo:** Works only on Base, requires a tap, and is disabled while
   Shift or Alt is held.
 - **Caps Word:** Both Shifts activate Caps Word.
-- **Layer and mode indicators:** The Base layer selectors and each secondary
+- **Layer and mode indicators:** The Base layer thumb selectors and each secondary
   layer's Layer Lock key use the layer's color: blue for Mouse, orange for
   Numpad, and green for Symbols. Active typing modes are shown in magenta: the
   left thumb Shift while Auto Shift is enabled, all Shift keys during Caps Word,
